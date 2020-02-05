@@ -1,0 +1,29 @@
+server:
+  port: 7777
+eureka:
+  client:
+    # 是否将自己注册到 Eureka Server
+    register-with-eureka: false
+    # 是否从 Eureka Server 获取注册信息
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://root:root@127.0.0.1:7777/eureka/
+  server:
+    responseCacheUpdateIntervalMs: 3000
+    responseCacheAutoExpirationInSeconds: 180
+    eviction-interval-timer-in-ms: 10000  # 清理无效节点
+    #evictionIntervalTimerInMs: 4000
+  instance:
+    hostname: eureka
+spring:
+  security:
+    user:
+      name: root
+      password: root
+  main:
+    allow-bean-definition-overriding: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: bus-refresh

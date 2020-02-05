@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="JUnitGeneratorProjectSettings">
-    <option name="selectedTemplateKey" value="JUnit 4" />
-  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/smart-community-common/pom.xml" />
         <option value="$PROJECT_DIR$/smart-community-eureka/pom.xml" />
+        <option value="$PROJECT_DIR$/smart-community-notification/pom.xml" />
+        <option value="$PROJECT_DIR$/smart-community-notification-consumer7776/pom.xml" />
+        <option value="$PROJECT_DIR$/smart-community-notification-consumer7778/pom.xml" />
+        <option value="$PROJECT_DIR$/smart-community-notification-provider7776/pom.xml" />
+        <option value="$PROJECT_DIR$/config/pom.xml" />
+        <option value="$PROJECT_DIR$/common-library/pom.xml" />
+        <option value="$PROJECT_DIR$/gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/smart-community-notification-provider/pom.xml" />
+        <option value="$PROJECT_DIR$/smart-community-notification-consumer/pom.xml" />
+        <option value="$PROJECT_DIR$/smart-community-consumer/pom.xml" />
+        <option value="$PROJECT_DIR$/smart-community-provider/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager">
+  <component name="ProjectRootManager" version="2" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

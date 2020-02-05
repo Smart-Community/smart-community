@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zc.mapper.PermissionsMapper">
+
+    <select id="permissionsAll" resultMap="permissions">
+        select permissions_role_id permissionsRoleId ,power_url_id powerUrlId, power_url_prefix powerUrlPrefix from permissions a left join power_url b on
+         a.permissions_power_url_id = b.power_url_id;
+    </select>
+
+    <resultMap id="permissions" type="com.zc.dto.PermissionDTO">
+        <result column="permissionsRoleId" property="roleId"/>
+        <collection property="powUrlList" ofType="PowerUrl" >
+            <result column="powerUrlId" property="powerUrlId"/>
+            <result column="powerUrlPrefix" property="powerUrlPrefix"/>
+        </collection>
+    </resultMap>
+</mapper>

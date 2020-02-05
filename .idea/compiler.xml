@@ -2,23 +2,41 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="smart-community-consumer" />
+        <module name="config" />
+        <module name="smart-community-provider" />
+        <module name="common-library" />
         <module name="smart-community-common" />
         <module name="smart-community-eureka" />
+        <module name="gateway" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="common-library" target="1.8" />
+      <module name="config" target="11" />
+      <module name="demo" target="11" />
+      <module name="gateway" target="11" />
       <module name="smart-community-common" target="11" />
+      <module name="smart-community-consumer" target="11" />
       <module name="smart-community-eureka" target="11" />
+      <module name="smart-community-provider" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="smart-community-common" options="" />
-      <module name="smart-community-eureka" options="" />
+      <module name="common-library" options="-parameters" />
+      <module name="config" options="-parameters" />
+      <module name="demo" options="-parameters" />
+      <module name="gateway" options="-parameters" />
+      <module name="smart-community-common" options="-parameters" />
+      <module name="smart-community-consumer" options="-parameters" />
+      <module name="smart-community-eureka" options="-parameters" />
+      <module name="smart-community-provider" options="-parameters" />
     </option>
   </component>
 </project>

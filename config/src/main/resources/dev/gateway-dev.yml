@@ -1,0 +1,57 @@
+info:
+  component: Zuul Server
+
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
+
+hystrix:
+  threadpool:
+    default:
+      coreSize: 300
+      maxQueueSize: 200
+      queueSizeRejectionThreshold: 150
+  command:
+    default:
+      circuitBreaker:
+        requestVolumeThreshold: 50
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          strategy: THREAD
+          semaphore:
+            maxConcurrentRequests: 1000
+          thread:
+            timeoutInMilliseconds: 15000
+
+ribbon:
+  ConnectTimeout: 30000
+  ReadTimeout: 30000
+#  MaxAutoRetriesNextServer: 3
+
+zuul:
+  host:
+    socket-timeout-millis: 30000
+    connect-timeout-millis: 30000
+  ignoredServices: "*"
+  routes:
+    consumer:
+      path: /v1.0/consumer/**
+      stripPrefix: false
+      serviceId: consumer
+    provider:
+      path: /v1.0/provider/**
+      stripPrefix: false
+      serviceId: provider
+
+logging:
+  level:
+    ROOT: INFO
+    org.springframework.web: INFO
+
+spring.resources.static-locations: classpath:/static/

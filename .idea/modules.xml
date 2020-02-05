@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/common-library/common-library.iml" filepath="$PROJECT_DIR$/common-library/common-library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/config/config.iml" filepath="$PROJECT_DIR$/config/config.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gateway/gateway.iml" filepath="$PROJECT_DIR$/gateway/gateway.iml" />
       <module fileurl="file://$PROJECT_DIR$/smart-community-common/smart-community-common.iml" filepath="$PROJECT_DIR$/smart-community-common/smart-community-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/smart-community-consumer/smart-community-notification-consumer.iml" filepath="$PROJECT_DIR$/smart-community-consumer/smart-community-notification-consumer.iml" />
       <module fileurl="file://$PROJECT_DIR$/smart-community-eureka/smart-community-eureka.iml" filepath="$PROJECT_DIR$/smart-community-eureka/smart-community-eureka.iml" />
+      <module fileurl="file://$PROJECT_DIR$/smart-community-provider/smart-community-notification-provider.iml" filepath="$PROJECT_DIR$/smart-community-provider/smart-community-notification-provider.iml" />
     </modules>
   </component>
 </project>
