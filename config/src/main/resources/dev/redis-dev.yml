@@ -13,5 +13,5 @@ spring:
 
 permission:
   key: PERMISSION_KEY
-userInfo:
+userinfo:
   key: userInfo:key-

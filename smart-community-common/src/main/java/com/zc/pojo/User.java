@@ -6,10 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
@@ -38,6 +35,7 @@ public class User {
     @Column(name = "user_last_login_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date userLastLoginTime;
-
+    @Transient
+    private String token;
 
 }

@@ -1,6 +1,7 @@
 package com.zc;
 
 import com.alibaba.druid.pool.DruidDataSourceFactory;
+import org.apache.log4j.PropertyConfigurator;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +17,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.servlet.Filter;
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -36,11 +38,16 @@ public class SmartCommunityProviderApplication {
     @Value("${mysql.dataBaseName}")
     private String dataBaseName;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if (args.length == 0) {
             args = new String[]{"--spring.profiles.active=dev"};
         }
         SpringApplication.run(SmartCommunityProviderApplication.class, args);
+        String logPath = "logs/provider.log";
+        Properties logProp = new Properties();
+        logProp.load(SmartCommunityProviderApplication.class.getClassLoader().getResourceAsStream("log4j.properties"));
+        logProp.setProperty("log4j.appender.file.file", logPath);
+        PropertyConfigurator.configure(logProp);
     }
 
 

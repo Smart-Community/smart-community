@@ -1,5 +1,6 @@
 package com.zc;
 
+import org.apache.log4j.PropertyConfigurator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -12,6 +13,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.servlet.Filter;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -21,11 +24,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 @SpringBootApplication(exclude= {DataSourceAutoConfiguration.class})
 public class SmartCommunityConsumerApplication {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		if (args.length == 0){
 			args = new String[] { "--spring.profiles.active=dev" };
 		}
 		SpringApplication.run(SmartCommunityConsumerApplication.class, args);
+		String logPath = "logs/consumer.log";
+		Properties logProp = new Properties();
+		logProp.load(SmartCommunityConsumerApplication.class.getClassLoader().getResourceAsStream("log4j.properties"));
+		logProp.setProperty("log4j.appender.file.file", logPath);
+		PropertyConfigurator.configure(logProp);
 	}
 
 	@Bean

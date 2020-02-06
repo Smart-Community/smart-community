@@ -15,4 +15,5 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     User findByUserPhone(@Param("userPhone") String userPhone);
 //    @Query(value = "select t from User t where t.userLogin=:userLogin")
     User findByUserLogin(@Param("userLogin")String userLogin);
+    User findByUserId(long userId);
 }

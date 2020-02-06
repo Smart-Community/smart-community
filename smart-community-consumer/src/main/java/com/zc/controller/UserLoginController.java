@@ -1,21 +1,23 @@
 package com.zc.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.zc.client.UserLoginClient;
+import com.zc.client.UserClient;
 import com.zc.pojo.User;
 import com.zc.util.CommonConstants;
 import com.zc.util.RedisUtil;
+import com.zc.util.TokenUtil;
+import com.zc.vo.ResultWrap;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -26,11 +28,13 @@ import java.util.Map;
 @RestController
 public class UserLoginController {
 
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
+
     @Value("${userinfo.key}")
     private String USER_INFO_KYE;
 
     @Autowired
-    private UserLoginClient userLoginClient;
+    private UserClient userClient;
 
     @Autowired
     private RedisUtil redisUtil;
@@ -42,9 +46,9 @@ public class UserLoginController {
                                          @RequestParam("type") int type) {
         Map<String, Object> map;
         if (type == 1) {
-            map = userLoginClient.loginByLogin(loginString, password);
+            map = userClient.loginByLogin(loginString, password);
         } else {
-            map = userLoginClient.loginByPhone(loginString, password);
+            map = userClient.loginByPhone(loginString, password);
         }
         if (map.get(CommonConstants.RESP_CODE).equals(CommonConstants.SUCCESS)) {
             User user = (User) map.get(CommonConstants.RESULT);
@@ -54,8 +58,24 @@ public class UserLoginController {
         return map;
     }
 
-    @PostMapping("/private/user/login")
-    public  void test(){
-        System.out.println(2);
+    @ApiOperation(value = "修改密码")
+    @PostMapping("/user/user/password/update")
+    public Object updatePassword(@RequestHeader("token") String token, @RequestParam("password") String password,
+                                 @RequestParam("passwordNew") String passwordNew) {
+        long userId;
+        try {
+            userId = TokenUtil.getUserId(token);
+        } catch (Exception e) {
+            LOG.error("token无效");
+            return ResultWrap.init(CommonConstants.ERROR_TOKEN, "token无效");
+        }
+        return userClient.updatePassword(userId, password, passwordNew);
+    }
+
+    @ApiOperation(value = "忘记密码")
+    @PostMapping("/public/user/password/forget")
+    public Object forgetPassword(@RequestParam("phone") String phone, @RequestParam("password") String password,
+                                 @RequestParam("code") String code) {
+        return userClient.putPassword(phone, password, code);
     }
 }

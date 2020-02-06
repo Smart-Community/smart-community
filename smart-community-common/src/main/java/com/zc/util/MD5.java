@@ -6,6 +6,9 @@ import java.util.Random;
 
 public class MD5 {
 
+	public static String getMD5String(String plainText){
+		return MD5.getMd5(plainText,32);
+	}
 	public static String getMd5(String plainText,int length) {
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");

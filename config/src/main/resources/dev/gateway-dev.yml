@@ -27,7 +27,7 @@ hystrix:
           semaphore:
             maxConcurrentRequests: 1000
           thread:
-            timeoutInMilliseconds: 15000
+            timeoutInMilliseconds: 150000
 
 ribbon:
   ConnectTimeout: 30000
@@ -38,20 +38,16 @@ zuul:
   host:
     socket-timeout-millis: 30000
     connect-timeout-millis: 30000
-  ignoredServices: "*"
+  ignored-services: "*"
   routes:
     consumer:
-      path: /v1.0/consumer/**
-      stripPrefix: false
+      path: /consumer/**
+      stripPrefix: true
       serviceId: consumer
-    provider:
-      path: /v1.0/provider/**
-      stripPrefix: false
-      serviceId: provider
 
 logging:
   level:
     ROOT: INFO
     org.springframework.web: INFO
 
-spring.resources.static-locations: classpath:/static/
+spring.resources.static-locations: classpath:/resources/,classpath:/static/,classpath:/public/,classpath:/templates/
