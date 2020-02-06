@@ -7,26 +7,22 @@ import com.netflix.zuul.context.RequestContext;
 import com.zc.pojo.User;
 import com.zc.util.RedisUtil;
 import com.zc.util.TokenUtil;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.URLEncoder;
-
+@Component
 public class AuthenticationHeaderFilter extends ZuulFilter {
 
     @Value("${permission.key}")
     private String PERMISSION_KEY;
-    @Value("${userInfo.key}")
+    @Value("${userinfo.key}")
     private String USER_INFO_KYE;
 
     @Autowired
@@ -39,19 +35,9 @@ public class AuthenticationHeaderFilter extends ZuulFilter {
     private static final String secretKey = "ZC-20200115";
 
     private static final String[][] preAuthenticationIgnoreUris = {
-            {"/public", "*"},
+            {"/consumer/public", "*"},
 
     };
-
-    //	所有request都需要验证Token，除了上面ignore的
-    private static final String[][] preAuthenticationMustUris = {
-            {"/", "*"}
-    };
-
-    //If request method is POST
-//	private static final String[][] preAuthenticationMustUris = {
-//		{"/user", "POST"}
-//	};
 
     @Override
     public String filterType() {
@@ -60,22 +46,21 @@ public class AuthenticationHeaderFilter extends ZuulFilter {
 
     @Override
     public int filterOrder() {
-        return 1;
+        return 0;
     }
 
     @Override
     public boolean shouldFilter() {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
-
+        log.info("---------------");
         try {
             request.setCharacterEncoding("UTF-8");
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        String uri = request.getRequestURI().toString().toLowerCase();
+        String uri = request.getRequestURI().toLowerCase();
         String method = request.getMethod();
 
         log.info(String.format("====AuthenticationHeaderFilter.shouldFilter - http method: (%s)", method));
@@ -108,28 +93,11 @@ public class AuthenticationHeaderFilter extends ZuulFilter {
             return null;
         }
 
-        // 1. clear userInfo from HTTP header to avoid fraud attack
-//        ctx.addZuulRequestHeader("user-info", "");
-
-        // 2. verify the passed user token
         String userToken = request.getHeader("token");
 
-//		log.info(String.format("====AuthenticationHeaderFilter.run - UserToken: %s",userToken));
-//        Claims claims = null;
         String userInfo = null;
         if (userToken != null && !userToken.trim().equals("null") && !userToken.trim().equals("")) {
             try {
-//                log.info("UserToken has value.....");
-//                claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(userToken).getBody();
-//                log.info("claims is:" + claims);
-//                String userId = "";
-//                try {
-//                    userId = (String) claims.get("userId");
-//                    log.info("这里是String类型");
-//                } catch (Exception ex) {
-//                    userId = ((Integer) claims.get("userId")).toString();
-//                    log.info("这里是Integer类型");
-//                }
                 long userId = TokenUtil.getUserId(userToken);
                 log.info("userId is:" + userId);
                 String userString = redisUtil.getStr(USER_INFO_KYE + userId);
@@ -142,7 +110,7 @@ public class AuthenticationHeaderFilter extends ZuulFilter {
                 User user = JSONObject.parseObject(userString, User.class);
                 int roleId = user.getUserRoleId();
                 String prefixString = (String) stringRedisTemplate.opsForHash().get(PERMISSION_KEY, roleId);
-                String prefix = uri.split("/")[1];
+                String prefix = uri.split("/")[2];
                 if (!prefixString.contains(prefix)) {
                     this.stopZuulRoutingWithError(ctx, HttpStatus.UNAUTHORIZED,
                             "权限不足");
@@ -157,38 +125,6 @@ public class AuthenticationHeaderFilter extends ZuulFilter {
             this.stopZuulRoutingWithError(ctx, HttpStatus.UNAUTHORIZED,
                     "Expired User Token for the API (" + request.getRequestURI().toString() + ")");
         }
-
-//		log.info(String.format("=====AuthenticationHeaderFilter.run - userInfo: %s", userInfo));
-        // 3. set userInfo to HTTP header
-//        if (userInfo != null) {
-//            String encodeUserInfo = userInfo;
-//            try {
-//                encodeUserInfo = URLEncoder.encode(userInfo, "UTF-8");
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            ctx.addZuulRequestHeader("user-info", encodeUserInfo);
-//        }
-//		log.info(String.format("====AuthenticationHeaderFilter.run - userInfo: %s", request.getHeader("user-info")));
-//		log.info(String.format("====AuthenticationHeaderFilter.run - userInfo: %s", ctx.getZuulRequestHeaders().get
-//		("user-info")));
-
-        // 4. stop the filter chain if userInfo is must
-		/*if (userInfo == null) {
-			for (int i=0; i<preAuthenticationMustUris.length; i++) {
-				if (uri.startsWith(preAuthenticationMustUris[i][0].toLowerCase()) && 
-						(preAuthenticationMustUris[i][1].equals("*") || method.equalsIgnoreCase
-						(preAuthenticationMustUris[i][1])) ) {
-					log.info(String.format("userInfo is missed for %s", uri));
-					
-					this.stopZuulRoutingWithError(ctx, HttpStatus.UNAUTHORIZED, "User Login is needed for the API (" +
-					 request.getRequestURI().toString() + ")");
-					
-					return null;
-				}
-			}
-		}*/
-
         return null;
     }
 
@@ -198,4 +134,5 @@ public class AuthenticationHeaderFilter extends ZuulFilter {
         ctx.setResponseBody(responseText);
         ctx.setSendZuulResponse(false);
     }
+
 }

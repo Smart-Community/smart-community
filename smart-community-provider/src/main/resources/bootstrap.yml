@@ -1,0 +1,40 @@
+server:
+  port: 9999
+mysql:
+  dataBaseName: smartcommunity
+spring:
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  cache:
+    type: redis
+  jpa:
+    show-sql: true
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.zc.pojo
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+---
+spring:
+  profiles: dev
+  application:
+    name: prodiver
+  cloud:
+    config:
+      label: dev
+      name: eureka,mysql,redis,${spring.application.name}
+      uri: http://localhost:8099/
+
+
+---
+spring:
+  profiles: prod
+  application:
+    name: prodiver
+  cloud:
+    config:
+      label: prod
+      name: eureka,mysql,redis
+      uri: http://localhost:8099/
