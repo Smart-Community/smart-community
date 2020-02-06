@@ -52,4 +52,11 @@ public class UserBusinessImpl implements UserBusiness {
         return userRepository.save(user);
     }
 
+    @Override
+    @Transactional
+    public User addUser(User user,long houseId,int isOwner) {
+
+        return null;
+    }
+
 }

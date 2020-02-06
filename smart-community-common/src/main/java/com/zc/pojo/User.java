@@ -30,8 +30,6 @@ public class User {
     private int userRoleId;
     @Column(name = "user_state")
     private short userState;
-    @Column(name = "user_img_url")
-    private String userImgUrl;
     @Column(name = "user_last_login_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date userLastLoginTime;

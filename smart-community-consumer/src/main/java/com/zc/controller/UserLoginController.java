@@ -78,4 +78,11 @@ public class UserLoginController {
                                  @RequestParam("code") String code) {
         return userClient.putPassword(phone, password, code);
     }
+
+    @ApiOperation("新增用户")
+    @PostMapping("/public/user/add")
+    public Object addUser(User user, @RequestParam("tung_id") int tung_id, @RequestParam("unit_id") int unit_id,
+                          @RequestParam("number") int number) {
+        return userClient
+    }
 }

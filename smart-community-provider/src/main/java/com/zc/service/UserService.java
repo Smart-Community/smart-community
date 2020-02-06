@@ -1,6 +1,8 @@
 package com.zc.service;
 
+import com.zc.business.HouseBusiness;
 import com.zc.business.UserBusiness;
+import com.zc.pojo.House;
 import com.zc.pojo.User;
 import com.zc.util.CommonConstants;
 import com.zc.util.MD5;
@@ -25,6 +27,8 @@ public class UserService {
 
     @Autowired
     private UserBusiness userBusiness;
+    @Autowired
+    private HouseBusiness houseBusiness;
     @Autowired
     private SmsService smsService;
 
@@ -72,6 +76,19 @@ public class UserService {
         user = userBusiness.save(user);
         user.setUserPassword(null);
         return ResultWrap.init(CommonConstants.SUCCESS, "重置成功", user);
+    }
+
+    @ApiOperation("新增用户")
+    public Map<String, Object> addUser(User user, @RequestParam("tung_id") int tung_id,
+                                       @RequestParam("unit_id") int unit_id,
+                                       @RequestParam("number") int number,
+                                       @RequestParam("isOwner")int isOwner) {
+        user.setUserPassword(MD5.getMD5String("123456"));
+        House house = houseBusiness.findByTungIdAndUnitIdAndNumber(tung_id,unit_id,number);
+        if (house==null){
+            return  ResultWrap.init(CommonConstants.FALIED,"房屋不存在");
+        }
+        return ResultWrap.init(CommonConstants.SUCCESS,"添加用户成功",userBusiness.addUser(user,house.getHouseId(),isOwner));
     }
 
     private Map<String, Object> verifyLogin(User user, String password) {

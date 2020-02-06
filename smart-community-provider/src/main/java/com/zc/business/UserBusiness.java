@@ -15,4 +15,6 @@ public interface UserBusiness {
     User findByUserId(long userId);
 
     User save(User user);
+
+    User addUser(User user,long houseId,int isOwner);
 }
