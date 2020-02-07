@@ -145,7 +145,7 @@ public class SmsSingleSender {
 	public SmsSingleSenderResult sendWithParam(
 			String nationCode,
 			String phoneNumber,
-			int templId,
+			String templId,
 			ArrayList<String> params,
 			String sign,
 			String extend,

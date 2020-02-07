@@ -36,6 +36,8 @@ public class SmsService {
     private String SECRETKEY;
     @Value("${sms.sign}")
     private String SIGN;
+    @Value("${sms.moblie}")
+    private String moblie;
     @Autowired
     private RedisUtil redisUtil;
 
@@ -61,7 +63,7 @@ public class SmsService {
         redisUtil.setStr(phone, code, 5L);
         try {
             SmsSingleSender singleSender = new SmsSingleSender(ACCESSKEY, SECRETKEY);
-            SmsSingleSenderResult smsSingleSenderResult = singleSender.sendWithParam("86", phone, 0, list, SIGN, null,
+            SmsSingleSenderResult smsSingleSenderResult = singleSender.sendWithParam("86", phone, moblie, list, SIGN, null,
                     null);
             if (smsSingleSenderResult.result != 0) {
                 return ResultWrap.init(CommonConstants.FALIED, "发送失败");
