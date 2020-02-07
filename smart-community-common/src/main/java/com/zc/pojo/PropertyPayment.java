@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -18,7 +19,7 @@ import java.util.Date;
 @Entity
 @Table(name = "property_payment")
 @Accessors(chain = true)
-public class PropertyPayment {
+public class PropertyPayment implements Serializable {
     @Id
     @Column(name = "property_payment_id")
     private long propertyPaymentId;

@@ -7,14 +7,15 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @Data
 @Entity
-@Table(name = "role")
+@Table(name = "user")
 @Accessors(chain = true)
-public class User {
+public class User implements Serializable {
     @Id
     @Column(name = "user_id")
     private long userId;
@@ -29,7 +30,7 @@ public class User {
     @Column(name = "user_role_id")
     private int userRoleId;
     @Column(name = "user_state")
-    private short userState;
+    private int userState;
     @Column(name = "user_last_login_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date userLastLoginTime;

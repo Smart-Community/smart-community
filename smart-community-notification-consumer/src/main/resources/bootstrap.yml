@@ -1,0 +1,18 @@
+server:
+  port: 0
+feign:
+  hystrix:
+    enabled: false
+spring:
+  main:
+    allow-bean-definition-overriding: true
+---
+spring:
+  profiles: dev
+  application:
+    name: consumer
+  cloud:
+    config:
+      label: dev
+      name: eureka,redis,${spring.application.name}
+      uri: http://localhost:8099/

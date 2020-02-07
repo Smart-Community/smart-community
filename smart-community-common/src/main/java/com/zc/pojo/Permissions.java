@@ -8,13 +8,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
 @Data
 @Entity
 @Table(name = "permissions")
 @Accessors(chain = true)
-public class Permissions {
+public class Permissions implements Serializable {
     @Id
     @Column(name = "id")
     private int id;

@@ -7,13 +7,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="smart-community-consumer" />
-        <module name="config" />
-        <module name="smart-community-provider" />
-        <module name="common-library" />
         <module name="smart-community-common" />
         <module name="smart-community-eureka" />
+        <module name="smart-community-notification-consumer" />
+        <module name="common-library" />
+        <module name="smart-community-provider" />
+        <module name="smart-community-consumer" />
         <module name="gateway" />
+        <module name="smart-community-notification-provider" />
+        <module name="config" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -24,6 +26,8 @@
       <module name="smart-community-common" target="11" />
       <module name="smart-community-consumer" target="11" />
       <module name="smart-community-eureka" target="11" />
+      <module name="smart-community-notification-consumer" target="11" />
+      <module name="smart-community-notification-provider" target="11" />
       <module name="smart-community-provider" target="11" />
     </bytecodeTargetLevel>
   </component>
@@ -36,6 +40,8 @@
       <module name="smart-community-common" options="-parameters" />
       <module name="smart-community-consumer" options="-parameters" />
       <module name="smart-community-eureka" options="-parameters" />
+      <module name="smart-community-notification-consumer" options="-parameters" />
+      <module name="smart-community-notification-provider" options="-parameters" />
       <module name="smart-community-provider" options="-parameters" />
     </option>
   </component>

@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Date;
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
@@ -17,7 +18,7 @@ import java.util.Date;
 @Entity
 @Table(name = "admin")
 @Accessors(chain = true)
-public class Admin {
+public class Admin implements Serializable {
     @Id
     @Column(name = "admin_id")
     private long adminId;

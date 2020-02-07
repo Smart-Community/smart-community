@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.Date;
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
@@ -17,7 +18,7 @@ import java.util.Date;
 @Entity
 @Table(name = "fault_maintenance")
 @Accessors(chain = true)
-public class FaultMaintenance {
+public class FaultMaintenance implements Serializable {
     @Id
     @Column(name = "fault_maintenance_id")
     private long faultMaintenanceId;
@@ -32,7 +33,7 @@ public class FaultMaintenance {
     @Column(name = "fault_maintenance_phone")
     private String faultMaintenancePhone;
     @Column(name = "fault_maintenance_state")
-    private short faultMaintenanceState;
+    private int faultMaintenanceState;
     @Column(name = "fault_maintenance_release_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date faultMaintenanceReleaseTime;

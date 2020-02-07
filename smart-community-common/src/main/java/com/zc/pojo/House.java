@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @JsonInclude(value = JsonInclude.Include.NON_NULL)
@@ -15,7 +16,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "house")
 @Accessors(chain = true)
-public class House {
+public class House implements Serializable {
     @Id
     @Column(name = "house_id")
     private long houseId;
@@ -28,7 +29,7 @@ public class House {
     @Column(name = "house_area")
     private BigDecimal houseArea;
     @Column(name = "house_state")
-    private short houseState;
+    private int houseState;
     @Column(name = "house_money")
     private BigDecimal houseMoney;
 
