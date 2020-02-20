@@ -29,6 +29,7 @@ public class ActivityRegistration implements Serializable {
     private Date activityRegistrationTime;
     @Column(name = "activity_information_id")
     private long activityInformationId;
-
+    @Column(name = "activity_registration_status")
+    private int status;
 
 }

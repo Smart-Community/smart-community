@@ -36,6 +36,10 @@ public class ActivityInformation implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date activityInformationReleaseTime;
 
+    @Column(name = "activity_infomation_join_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date joinTime;
+
     @Column(name = "activity_information_start_time")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date activityInformationStartTime;
@@ -49,5 +53,7 @@ public class ActivityInformation implements Serializable {
     @Column(name = "activity_information_limit")
     private short activityInformationLimit;
 
+    @Column(name = "activity_infomation_join")
+    private int join;
 
 }

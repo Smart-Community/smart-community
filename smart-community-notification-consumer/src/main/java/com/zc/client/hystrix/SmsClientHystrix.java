@@ -1,5 +1,6 @@
 package com.zc.client.hystrix;
 
+import com.zc.client.SmsClient;
 import org.springframework.stereotype.Component;
 
 /**
@@ -7,5 +8,9 @@ import org.springframework.stereotype.Component;
  * @create 2020-02-07-16:00
  */
 @Component
-public class SmsClientHystrix {
+public class SmsClientHystrix implements SmsClient {
+    @Override
+    public Object sendSms(String phone) {
+        return null;
+    }
 }

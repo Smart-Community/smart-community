@@ -1,0 +1,39 @@
+package com.zc.config;
+
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+/**
+ * @author 小帅气
+ * @create 2020-02-20-19:41
+ */
+@Configuration
+public class RabbitConfig {
+    @Value("${rabbit.host}")
+    private String host;
+    @Value("${rabbit.port}")
+    private int port;
+    @Value("${rabbit.username}")
+    private String userName;
+    @Value("${rabbit.password}")
+    private String password;
+    @Bean
+    public ConnectionFactory connectionFactory() {
+        CachingConnectionFactory factory = new CachingConnectionFactory();
+        factory.setHost(host);
+        factory.setPort(port);
+        factory.setUsername(userName);
+        factory.setPassword(password);
+        factory.setVirtualHost("/");
+        return factory;
+    }
+    @Bean
+    public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
+        return new RabbitAdmin(connectionFactory);
+    }
+
+}

@@ -1,9 +1,6 @@
 package com.zc.service;
 
-import com.zc.util.CommonConstants;
-import com.zc.util.RedisUtil;
-import com.zc.util.SmsSingleSender;
-import com.zc.util.SmsSingleSenderResult;
+import com.zc.util.*;
 import com.zc.vo.ResultWrap;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,9 +38,10 @@ public class SmsService {
     private String moblie;
     @Autowired
     private RedisUtil redisUtil;
+    private Random random;
 
     @ApiOperation("向指定手机发送验证码")
-    @RequestMapping("/public/sms/send")
+    @RequestMapping("/v1.0/sms/send")
     public Object sendSms(@RequestParam("phone") String phone) {
         if (phone.length() != 11) {
             return ResultWrap.init(CommonConstants.FALIED, "手机号应为11位");
@@ -53,24 +52,15 @@ public class SmsService {
             return ResultWrap.init(CommonConstants.FALIED, "请输入正确的手机号");
         }
         ArrayList<String> list = new ArrayList<>();
-        int random = (int) (Math.random() * 1000000);
-        String code = String.valueOf(random);
-        if (code.length() < 6) {
-            random += 100000;
-            code = String.valueOf(random);
-        }
-        list.add(code);
+        String code = random.nextInt(999999) % 900000 + 100000 + "";
+
         redisUtil.setStr(phone, code, 5L);
         try {
-            SmsSingleSender singleSender = new SmsSingleSender(ACCESSKEY, SECRETKEY);
-            SmsSingleSenderResult smsSingleSenderResult = singleSender.sendWithParam("86", phone, moblie, list, SIGN, null,
-                    null);
-            if (smsSingleSenderResult.result != 0) {
-                return ResultWrap.init(CommonConstants.FALIED, "发送失败");
-            }
+
         } catch (Exception e) {
             LOG.error("=======发送短信失败=======");
             redisUtil.del(phone);
+            return ResultWrap.init(CommonConstants.FALIED, "发送失败");
         }
         return ResultWrap.init(CommonConstants.SUCCESS, "发送成功");
     }

@@ -11,7 +11,7 @@ public interface NotificationMessageBusiness {
 
     NotificationMessage createNotification(long adminId, int typeId, String top, String desc);
 
-    Page queryNotification(int pageSize, int pageNum, Long startTime, long endTime);
+    Page queryNotification(int pageSize, int pageNum, Integer type, Long startTime, long endTime);
 
     NotificationMessage save(NotificationMessage notification);
 

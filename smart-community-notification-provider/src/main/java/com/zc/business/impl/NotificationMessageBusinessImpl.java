@@ -42,11 +42,11 @@ public class NotificationMessageBusinessImpl implements NotificationMessageBusin
     }
 
     @Override
-    public Page queryNotification(int pageSize, int pageNum, Long startTime, long endTime) {
+    public Page queryNotification(int pageSize, int pageNum,Integer type , Long startTime, long endTime) {
         Page page = new Page();
         page.setCurrPageNo(pageNum);
         page.setPageSize(pageSize);
-        List<NotificationMessage> list = notificationMessageMapper.queryNotificationMessage(page, startTime, endTime);
+        List<NotificationMessage> list = notificationMessageMapper.queryNotificationMessage(page,  type ,startTime, endTime);
         int total = (int) notificationMessageRepository.count();
         page.setTotalCount(total);
         page.setObjectList(list);

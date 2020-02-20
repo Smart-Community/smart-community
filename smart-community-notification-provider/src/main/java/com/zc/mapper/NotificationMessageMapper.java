@@ -11,6 +11,6 @@ import java.util.List;
  * @create 2020-02-07-21:44
  */
 public interface NotificationMessageMapper {
-    List<NotificationMessage> queryNotificationMessage(@Param("page") Page page, @Param("startTime") long startTime,
+    List<NotificationMessage> queryNotificationMessage(@Param("page") Page page, @Param("type") Integer type,@Param("startTime") long startTime,
                                                        @Param("endTime") long endTime);
 }

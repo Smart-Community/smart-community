@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zc.mapper.ActivityMapper">
+
+    <update id="updateJoinNum">
+        update activity_information set activity_infomation_join = activity_infomation_join+#{num} ,set
+        activity_information_surplus_number = activity_information_surplus_number-#{num}
+        <where>
+            activity_information_id = #{activityId}
+        </where>
+
+    </update>
+
+</mapper>
