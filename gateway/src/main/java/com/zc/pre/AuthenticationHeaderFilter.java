@@ -53,9 +53,11 @@ public class AuthenticationHeaderFilter extends ZuulFilter {
     public boolean shouldFilter() {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
+        HttpServletResponse response = ctx.getResponse();
         log.info("---------------");
         try {
             request.setCharacterEncoding("UTF-8");
+            response.setCharacterEncoding("UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
         }
