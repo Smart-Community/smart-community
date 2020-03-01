@@ -29,7 +29,7 @@ public class BeanMapUtils {
      * 将map集合中的数据转化为指定对象的同名属性中
      */
     public static <T> T mapToBean(Map<String, Object> map, Class<T> clazz) throws Exception {
-        T bean = clazz.newInstance();
+        T bean = clazz.getDeclaredConstructor().newInstance();
         BeanMap beanMap = BeanMap.create(bean);
         beanMap.putAll(map);
         return bean;

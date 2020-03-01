@@ -17,28 +17,28 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableRabbit
 public class RabbitConfig {
-    @Value("${rabbit.host}")
-    private String host;
-    @Value("${rabbit.port}")
-    private int port;
-    @Value("${rabbit.username}")
-    private String userName;
-    @Value("${rabbit.password}")
-    private String password;
-    @Bean
-    public ConnectionFactory connectionFactory() {
-        CachingConnectionFactory factory = new CachingConnectionFactory();
-        factory.setHost(host);
-        factory.setPort(port);
-        factory.setUsername(userName);
-        factory.setPassword(password);
-        factory.setVirtualHost("/smart-community");
-        return factory;
-    }
-    @Bean
-    public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
-        return new RabbitAdmin(connectionFactory);
-    }
+//    @Value("${spring.rabbit.host}")
+//    private String host;
+//    @Value("${spring.rabbit.port}")
+//    private int port;
+//    @Value("${spring.rabbit.username}")
+//    private String userName;
+//    @Value("${spring.rabbit.password}")
+//    private String password;
+//    @Bean
+//    public ConnectionFactory connectionFactory() {
+//        CachingConnectionFactory factory = new CachingConnectionFactory();
+//        factory.setHost(host);
+//        factory.setPort(port);
+//        factory.setUsername(userName);
+//        factory.setPassword(password);
+//        factory.setVirtualHost("/smart-community");
+//        return factory;
+//    }
+//    @Bean
+//    public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
+//        return new RabbitAdmin(connectionFactory);
+//    }
     @Bean
     MessageConverter messageConverter() {
         return new Jackson2JsonMessageConverter();

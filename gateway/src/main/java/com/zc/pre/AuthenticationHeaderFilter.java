@@ -87,13 +87,13 @@ public class AuthenticationHeaderFilter extends ZuulFilter {
         log.info(String.format("====AuthenticationHeaderFilter.run - %s request to %s", request.getMethod(), uri));
 
         //不允许外部访问接口
-        if (uri.contains("/v1.0/user/rebate/update")) {
-            ctx.setSendZuulResponse(false);
-            ctx.setResponseStatusCode(HttpServletResponse.SC_OK);
-            ctx.setResponseBody("该接口不允许外部访问");
-            ctx.set("isSuccess", false);
-            return null;
-        }
+//        if (uri.contains("/v1.0/user/rebate/update")) {
+//            ctx.setSendZuulResponse(false);
+//            ctx.setResponseStatusCode(HttpServletResponse.SC_OK);
+//            ctx.setResponseBody("该接口不允许外部访问");
+//            ctx.set("isSuccess", false);
+//            return null;
+//        }
 
         String userToken = request.getHeader("token");
 
@@ -110,8 +110,8 @@ public class AuthenticationHeaderFilter extends ZuulFilter {
                 }
                 redisUtil.setStr(USER_INFO_KYE + userId, userString, 30L);
                 User user = JSONObject.parseObject(userString, User.class);
-                int roleId = user.getUserRoleId();
-                String prefixString = (String) stringRedisTemplate.opsForHash().get(PERMISSION_KEY, roleId);
+                long roleId = user.getUserRoleId();
+                String prefixString = (String) stringRedisTemplate.opsForHash().get(PERMISSION_KEY, roleId+"");
                 String prefix = uri.split("/")[2];
                 if (!prefixString.contains(prefix)) {
                     this.stopZuulRoutingWithError(ctx, HttpStatus.UNAUTHORIZED,

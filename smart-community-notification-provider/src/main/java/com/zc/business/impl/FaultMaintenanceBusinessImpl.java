@@ -23,16 +23,18 @@ public class FaultMaintenanceBusinessImpl implements FaultMaintenanceBusiness {
         return faultMaintenanceRepository.save(faultMaintenance);
     }
 
+    //事务回滚
+//TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     @Override
     @Transactional
     public FaultMaintenance createFaultMaintenance(long userId, int typeId, String desc, String address, String phone) {
         Date date = new Date();
         FaultMaintenance faultMaintenance = new FaultMaintenance().setFaultMaintenanceUserId(userId)
                 .setFaultMaintenanceFaultTypeId(typeId).setFaultMaintenanceDescribe(desc)
-                .setFaultMaintenanceAddrss(address).setFaultMaintenancePhone(phone).setFaultMaintenanceReleaseTime(date)
+                .setFaultMaintenanceAddrss(address).setFaultMaintenancePhone(phone)
+                .setFaultMaintenanceReleaseTime(date)
                 .setFaultMaintenanceReleaseTimeUnix(date.getTime());
         return faultMaintenanceRepository.save(faultMaintenance);
     }
-
 
 }

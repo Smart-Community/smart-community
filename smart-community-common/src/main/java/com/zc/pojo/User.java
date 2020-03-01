@@ -28,7 +28,7 @@ public class User implements Serializable {
     @Column(name = "user_password")
     private String userPassword;
     @Column(name = "user_role_id")
-    private int userRoleId;
+    private long userRoleId;
     @Column(name = "user_state")
     private int userState;
     @Column(name = "user_last_login_time")

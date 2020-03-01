@@ -9,5 +9,5 @@ import org.springframework.stereotype.Component;
 @Component
 public class PropertyFeeScanner {
 
-
+        //todo 每月1号凌晨扫描全表扣除物业费
 }

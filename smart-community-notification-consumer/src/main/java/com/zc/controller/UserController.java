@@ -1,24 +1,28 @@
 package com.zc.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.zc.client.MenuClient;
 import com.zc.client.UserClient;
+import com.zc.pojo.Menu;
 import com.zc.pojo.User;
-import com.zc.util.BeanMapUtils;
 import com.zc.util.CommonConstants;
 import com.zc.util.RedisUtil;
 import com.zc.util.TokenUtil;
 import com.zc.vo.ResultWrap;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.expression.spel.ast.NullLiteral;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,11 +38,14 @@ public class UserController {
     @Value("${userinfo.key}")
     private String USER_INFO_KYE;
 
-    @Autowired
+    @Resource
     private UserClient userClient;
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private MenuClient menuClient;
 
     @ApiOperation(value = "用户登录")
     @PostMapping("/public/user/login")
@@ -53,13 +60,13 @@ public class UserController {
         }
         if (CommonConstants.SUCCESS.equals(map.get(CommonConstants.RESP_CODE))) {
             User user = null;
+            String userJson = JSONObject.toJSONString(map.get(CommonConstants.RESULT));
             try {
-                user = BeanMapUtils.mapToBean((Map<String, Object>) map.get(CommonConstants.RESULT), User.class);
+                user = JSONObject.parseObject(userJson, User.class);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            String userString = JSON.toJSONString(user);
-            redisUtil.setStr(USER_INFO_KYE + user.getUserId(), userString, 30L);
+            redisUtil.setStr(USER_INFO_KYE + user.getUserId(), userJson, 30L);
         }
         return map;
     }
@@ -91,4 +98,68 @@ public class UserController {
                           @RequestParam("number") int number, @RequestParam("isOwner") int isOwner) {
         return userClient.addUser(user, tung_id, unit_id, number, isOwner);
     }
+
+    @GetMapping("/user/get")
+    public Object getUserInfo(@RequestHeader("token") String token) {
+        Long userId = null;
+        try {
+            userId = TokenUtil.getUserId(token);
+        } catch (Exception e) {
+            LOG.error("token解析错误");
+            return ResultWrap.init(CommonConstants.ERROR_TOKEN, "token无效");
+        }
+
+        User user = getUser(userId);
+        if (user == null) {
+            return ResultWrap.init(CommonConstants.FALIED, "用户未登录");
+        }
+        return ResultWrap.init(CommonConstants.SUCCESS, "成功", user);
+    }
+
+    @ApiOperation("注销")
+    @GetMapping("/user/cancel")
+    public Object userCancel(@RequestHeader("token") String token) {
+        Long userId = null;
+        try {
+            userId = TokenUtil.getUserId(token);
+        } catch (Exception e) {
+            LOG.error("token解析错误");
+            return ResultWrap.init(CommonConstants.ERROR_TOKEN, "token无效");
+        }
+        redisUtil.del(USER_INFO_KYE + userId);
+        return ResultWrap.init(CommonConstants.SUCCESS, "注销成功");
+    }
+
+
+    @GetMapping("/public/menu/get")
+    public Map<String, Object> getMenuList(@RequestParam("token") String token) {
+        Long userId = null;
+        try {
+            userId = TokenUtil.getUserId(token);
+        } catch (Exception e) {
+            LOG.error("无效token");
+            return ResultWrap.init(CommonConstants.FALIED, "非法访问");
+        }
+        User user = getUser(userId);
+        if (user == null) {
+            return ResultWrap.init(CommonConstants.FALIED, "请登录");
+        }
+        Map<String, Object> menuListByRoleId = menuClient.getMenuListByRoleId(user.getUserRoleId());
+        List<LinkedHashMap<String,Object>> list = (List<LinkedHashMap<String, Object>>) menuListByRoleId.get("data");
+        for (Map map : list) {
+            map.put("href", map.get("href")+"?=token"+token);
+        }
+        return menuListByRoleId;
+    }
+
+
+    //    从缓存中获取user信息
+    private User getUser(Long userId) {
+        String userJson = redisUtil.getStr(USER_INFO_KYE + userId);
+        if (StringUtils.isEmpty(userJson)) {
+            return null;
+        }
+        return JSON.parseObject(userJson, User.class);
+    }
+
 }

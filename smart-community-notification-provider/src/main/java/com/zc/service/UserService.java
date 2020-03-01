@@ -103,8 +103,9 @@ public class UserService {
             return ResultWrap.init(CommonConstants.FALIED, "账户或密码错误");
         }
         String token = TokenUtil.createToken(user.getUserId(), user.getUserPhone());
-        user.setToken(token).setUserPassword(null);
         user.setUserLastLoginTime(new Date());
+        userBusiness.save(user);
+        user.setToken(token).setUserPassword(null);
         return ResultWrap.init(CommonConstants.SUCCESS, "登录成功", user);
     }
 }

@@ -1,6 +1,9 @@
 package com.zc;
 
 import org.apache.log4j.PropertyConfigurator;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -18,9 +21,10 @@ import java.util.Properties;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
+@EnableRabbit
 @EnableDiscoveryClient
 @EnableAsync
-@EnableFeignClients("com.zc")
+@EnableFeignClients("com.zc.client")
 @SpringBootApplication(exclude= {DataSourceAutoConfiguration.class})
 public class SmartCommunityConsumerApplication {
 
@@ -50,5 +54,8 @@ public class SmartCommunityConsumerApplication {
 		executor.initialize();
 		return executor;
 	}
-
+	@Bean
+	MessageConverter messageConverter() {
+		return new Jackson2JsonMessageConverter();
+	}
 }

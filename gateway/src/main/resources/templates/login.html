@@ -16,24 +16,25 @@
     <header class="layui-elip">后台登录</header>
     <form class="layui-form">
         <div class="layui-input-inline">
-            <input type="text" name="account" required lay-verify="required" placeholder="邮箱" autocomplete="off"
+            <input type="text" name="account" id="adminLogin" required lay-verify="required" placeholder="登陆名/手机号"
+                   autocomplete="off"
                    class="layui-input">
         </div>
         <div class="layui-input-inline">
-            <input type="password" name="password" required lay-verify="required" placeholder="密码" autocomplete="off"
+            <input type="password" name="password" id="password" required lay-verify="required" placeholder="密码"
+                   autocomplete="off"
                    class="layui-input">
         </div>
-        <div class="layui-input-inline login-btn">
-            <button type="submit" class="layui-btn">登录</button>
-        </div>
-        <hr/>
-        <!--<div class="layui-input-inline">
-            <button type="button" class="layui-btn layui-btn-primary">QQ登录</button>
+        <div class="layui-input-inline">
+            <select id="type" class="layui-select">
+                <option value="1">登陆名</option>
+                <option value="2">手机号</option>
+            </select>
         </div>
         <div class="layui-input-inline">
-            <button type="button" class="layui-btn layui-btn-normal">微信登录</button>
-        </div>-->
-        <p><a href="javascript:;" class="fl">立即注册</a><a href="javascript:;" class="fr">忘记密码？</a></p>
+            <button type="submit" id="btn" class="layui-btn btn-submit" lay-submit="" lay-filter="sub">立即登录</button>
+        </div>
+
     </form>
 </div>
 
@@ -44,8 +45,53 @@
 
         // 操作对象
         var form = layui.form
-                , $ = layui.jquery;
-
+            , $ = layui.jquery;
+        // 验证
+        form.verify({
+            account: function (value) {
+                if (value == "") {
+                    return "请输入用户名";
+                }
+            },
+            password: function (value) {
+                if (value == "") {
+                    return "请输入密码";
+                }
+            }
+        });
+        form.on('submit(sub)', function (data) {
+            var btn = $(this);
+            var adminLogin = $("#adminLogin").val();
+            var password = $("#password").val();
+            var type = $("#type").val();
+            $.ajax({
+                url: "/consumer/public/user/login",
+                data: {
+                    "loginString": adminLogin,
+                    "password": password,
+                    "type": type
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (res) {
+                    if (res.resp_code != 000000) {
+                        var index = layer.alert(res.resp_message, {
+                            skin: 'layui-layer-molv' //样式类名
+                            , closeBtn: 0
+                        }, function () {
+                            $("#codeNumber").val("");
+                            $("#password").val("");
+                            $("#type").val(type);
+                            layer.close(index);
+                        });
+                    } else if (res.resp_code == 000000) {
+                        console.log(1)
+                        location = "index.html?" + res.result.token;
+                    }
+                }
+            });
+            return false;
+        })
         // you code ...
 
 
