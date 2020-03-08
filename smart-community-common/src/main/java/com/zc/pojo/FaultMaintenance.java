@@ -35,7 +35,7 @@ public class FaultMaintenance implements Serializable {
     @Column(name = "fault_maintenance_state")
     private int faultMaintenanceState;
     @Column(name = "fault_maintenance_release_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date faultMaintenanceReleaseTime;
     @Column(name = "fault_maintenance_release_time_unix")
     private long faultMaintenanceReleaseTimeUnix;

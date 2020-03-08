@@ -1,101 +1,196 @@
 package com.zc.vo;
-
-import lombok.Data;
-import lombok.experimental.Accessors;
-import org.springframework.stereotype.Component;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
-/**
- * @author 小帅气
- * @create 2019-09-09-21:23
- */
-@Accessors(chain = true)
-public class Page implements Serializable {
-    // 总页数
-    private int totalPageCount = 0;
-    // 页面大小，即每页显示记录数
-    private int pageSize = 10;
-    // 记录总数
-    private int totalCount;
-    // 当前页码
-    private int currPageNo = 1;
-    private int currPage;
 
-    private List<?> objectList;
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Page<T> implements Iterable<T>, Serializable {
+    private static final long serialVersionUID = -3720998571176536865L;
+    private List<T> content = new ArrayList<>();
+    private long total;
+    private int pageNum;
+    private int pageSize;
+    private BigDecimal countAmount;
 
-    @Override
-    public String toString() {
-        return "Page{" +
-                "totalPageCount=" + totalPageCount +
-                ", pageSize=" + pageSize +
-                ", totalCount=" + totalCount +
-                ", currPageNo=" + currPageNo +
-                ", currPage=" + currPage +
-                ", objectList=" + objectList +
-                '}';
+    public Page() {
     }
 
-    public int getCurrPage() {
-        return currPage;
+    public Page(List<T> content, long total, int pageNum, int pageSize) {
+        this.content = content;
+        this.total = total;
+        this.pageNum = pageNum;
+        this.pageSize = pageSize;
+    }
+    public Page(List<T> content, long total, int pageNum, int pageSize, BigDecimal countAmount) {
+        this.content = content;
+        this.total = total;
+        this.pageNum = pageNum;
+        this.pageSize = pageSize;
+        this.countAmount = countAmount;
+    }
+    private BigDecimal totalWithdrawAmount;
+
+    private Integer successNum;
+
+    private Integer failureNum;
+    /**
+     * Returns if there is a previous page.
+     *
+     * @return if there is a previous page.
+     */
+    public boolean hasPrevious() {
+        return getPageNum() > 1;
     }
 
-    public void setCurrPage(int currPage) {
-        this.currPage = currPage;
+    /**
+     * Returns if there is a next page.
+     *
+     * @return if there is a next page.
+     */
+    public boolean hasNext() {
+        return getPageNum() < getTotalPage();
     }
 
-    public int getCurrPageNo() {
-        if (totalPageCount == 0) {
-            return 0;
-        }
-        return currPageNo;
+    /**
+     * Returns whether the current page is the first one.
+     *
+     * @return whether the current page is the first one.
+     */
+    public boolean isFirst() {
+        return !hasPrevious();
     }
 
-    public void setCurrPageNo(int currPageNo) {
-        if (currPageNo > 0) {
-            this.currPageNo = currPageNo;
-            this.currPage = (currPageNo - 1) * pageSize;
-        }
+    /**
+     * Returns whether the current  page is the last one.
+     *
+     * @return whether the current  page is the last one.
+     */
+    boolean isLast() {
+        return !hasNext();
     }
 
+    /**
+     * Returns the total amount of elements of all pages.
+     *
+     * @return the total amount of elements of all pages.
+     */
+    public long getTotal() {
+        return total;
+    }
+
+    public void setTotal(long total) {
+        this.total = total;
+    }
+
+    /**
+     * Returns the number of total pages.
+     *
+     * @return the number of total pages
+     */
+    public int getTotalPage() {
+        return getPageSize() == 0 ? 1 : (int) Math.ceil((double) total / (double) getPageSize());
+    }
+
+    /**
+     * Returns the page content as unmodifiable {@link List}.
+     *
+     * @return Returns the page content as unmodifiable {@link List}
+     */
+    public List<T> getContent() {
+        return Collections.unmodifiableList(content);
+    }
+
+    public void setContent(List<T> content) {
+        this.content = content;
+    }
+
+    /**
+     * Returns whether the current page has content.
+     *
+     * @return whether the current page has content.
+     */
+    public boolean hasContent() {
+        return getContentSize() > 0;
+    }
+
+    /**
+     * Returns the number of elements on current page.
+     *
+     * @return the number of elements on current page.
+     */
+    public int getContentSize() {
+        return content.size();
+    }
+
+    /**
+     * Returns the number of items of each page.
+     *
+     * @return the number of items of each page
+     */
     public int getPageSize() {
         return pageSize;
     }
 
     public void setPageSize(int pageSize) {
-        if (pageSize > 0) {
-            this.pageSize = pageSize;
-        }
+        this.pageSize = pageSize;
     }
 
-    public int getTotalCount() {
-        return totalCount;
+    /**
+     * Returns the number of current page. (Zero-based numbering.)
+     *
+     * @return the number of current page.
+     */
+    public int getPageNum() {
+        return pageNum == 0 ? 1 : pageNum;
     }
 
-    public void setTotalCount(int totalCount) {
-        if (totalCount > 0) {
-            this.totalCount = totalCount;
-            // 计算总页数
-            totalPageCount = this.totalCount % pageSize == 0 ? (this.totalCount / pageSize)
-                    : (this.totalCount / pageSize + 1);
-        }
+    /**
+     * Set the number of current page. (Zero-based numbering.)
+     */
+    public void setPageNum(int pageNum) {
+        this.pageNum = pageNum;
     }
 
-    public int getTotalPageCount() {
-        return totalPageCount;
+    @Override
+    public Iterator<T> iterator() {
+        return getContent().iterator();
     }
 
-    public void setTotalPageCount(int totalPageCount) {
-        this.totalPageCount = totalPageCount;
+    public BigDecimal getCountAmount() {
+        return countAmount;
     }
 
-    public List<?> getObjectList() {
-        return objectList;
+    public void setCountAmount(BigDecimal countAmount) {
+        this.countAmount = countAmount;
     }
 
-    public void setObjectList(List<?> objectList) {
-        this.objectList = objectList;
+    public BigDecimal getTotalWithdrawAmount() {
+        return totalWithdrawAmount;
     }
 
+    public void setTotalWithdrawAmount(BigDecimal totalWithdrawAmount) {
+        this.totalWithdrawAmount = totalWithdrawAmount;
+    }
+
+    public Integer getSuccessNum() {
+        return successNum;
+    }
+
+    public void setSuccessNum(Integer successNum) {
+        this.successNum = successNum;
+    }
+
+    public Integer getFailureNum() {
+        return failureNum;
+    }
+
+    public void setFailureNum(Integer failureNum) {
+        this.failureNum = failureNum;
+    }
 }

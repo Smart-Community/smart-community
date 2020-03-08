@@ -38,4 +38,9 @@ public class UserHystrix implements UserClient {
     public Map<String, Object> addUser(User user, int tung_id, int unit_id, int number, int isOwner) {
         return null;
     }
+
+    @Override
+    public Map<String, Object> setPassword(String phone, Long userId, Integer type, String password) {
+        return null;
+    }
 }

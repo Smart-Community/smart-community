@@ -36,8 +36,8 @@
                     <dd data-skin="2"><a href="javascript:;">蓝白</a></dd>
                 </dl>
             </li>
-            <li class="layui-nav-item">
-                <a class="name" id="cancel" href="javascript:;"><img src="./frame/static/image/code.png" alt="logo"> 退出
+            <li class="layui-nav-item" id="cancel">
+                <a class="name"  href="javascript:;"><img src="./frame/static/image/code.png" alt="logo"> 退出
                 </a>
             </li>
         </ul>
@@ -109,12 +109,10 @@
         }
         vipNav.main('/consumer/public/menu/get?token=' + getQueryVariable(), 'side-main', true);
         $("#iframe").attr("src", "/welcome.html?token=" + getQueryVariable());
-        $("cancel").click(function () {
+        $("#cancel").click(function () {
             $.ajax({
                 url: '/consumer/user/cancel',
-                headers: {
-                    "token": getQueryVariable()
-                },
+                headers:data,
                 type: "GET",
                 dataType: "json",
                 success:function (res) {

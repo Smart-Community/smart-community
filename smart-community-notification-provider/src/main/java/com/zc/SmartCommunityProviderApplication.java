@@ -57,7 +57,7 @@ public class SmartCommunityProviderApplication {
     public DataSource getDataSource() throws Exception {
         Properties props = new Properties();
         props.put("driverClassName", driver);
-        props.put("url", url + "/" + dataBaseName + "?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8&useSSL=false");
+        props.put("url", url + "/" + dataBaseName + "?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&useSSL=false");
         props.put("username", userName);
         props.put("password", password);
         return DruidDataSourceFactory.createDataSource(props);

@@ -11,5 +11,5 @@ spring:
   cloud:
     config:
       label: dev
-      name: eureka,redis,${spring.application.name}
+      name: eureka,redis,commom,${spring.application.name}
       uri: http://localhost:8099/

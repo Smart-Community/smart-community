@@ -1,5 +1,6 @@
 //ajax常用函数
 
+document.write('<script src="/js/jquery.js" type="text/javascript" charset="utf-8"></script>');
 
 function request(url,header,data,type,Function,skipUrl) {
     $.ajax({
@@ -9,6 +10,7 @@ function request(url,header,data,type,Function,skipUrl) {
         type:type,
         dataType:"JSON",
         success:function (res) {
+            console.log(res)
             Function(res,skipUrl);
         },
         error:function () {
@@ -27,4 +29,11 @@ function successSkip(res,url) {
 //成功失败均提示
 function successHint(res) {
     layer.msg(res.resp_message);
+}
+//获取路径的token
+function getQueryVariable() {
+    var param = window.location.href.split("?")[1];
+    var index = param.indexOf("=") + 1
+    var query = param.substring(index);
+    return (query);
 }

@@ -130,6 +130,21 @@ public class UserController {
         return ResultWrap.init(CommonConstants.SUCCESS, "注销成功");
     }
 
+    @ApiOperation("修改密码")
+    @PostMapping("/user/password/update")
+    public Object updatePwd(@RequestHeader("token") String token, @RequestParam("newPwd") String newPwd) {
+        long userId;
+        try {
+            userId = TokenUtil.getUserId(token);
+        } catch (Exception e) {
+            LOG.error("token解析错误");
+            return ResultWrap.init(CommonConstants.ERROR_TOKEN, "token无效");
+        }
+        return userClient.setPassword(null, userId, 1, newPwd);
+    }
+
+    @ApiOperation("给用户设置密码")
+
 
     @GetMapping("/public/menu/get")
     public Map<String, Object> getMenuList(@RequestParam("token") String token) {
@@ -145,9 +160,9 @@ public class UserController {
             return ResultWrap.init(CommonConstants.FALIED, "请登录");
         }
         Map<String, Object> menuListByRoleId = menuClient.getMenuListByRoleId(user.getUserRoleId());
-        List<LinkedHashMap<String,Object>> list = (List<LinkedHashMap<String, Object>>) menuListByRoleId.get("data");
+        List<LinkedHashMap<String, Object>> list = (List<LinkedHashMap<String, Object>>) menuListByRoleId.get("data");
         for (Map map : list) {
-            map.put("href", map.get("href")+"?=token"+token);
+            map.put("href", map.get("href") + "?token=" + token);
         }
         return menuListByRoleId;
     }

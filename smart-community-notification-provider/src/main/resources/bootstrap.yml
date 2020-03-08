@@ -3,9 +3,6 @@ server:
 mysql:
   dataBaseName: smartcommunity
 spring:
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
   cache:
     type: redis
   jpa:
@@ -24,7 +21,7 @@ spring:
   cloud:
     config:
       label: dev
-      name: eureka,mysql,redis,rabbitmq,${spring.application.name}
+      name: eureka,mysql,commom,redis,rabbitmq,${spring.application.name}
       uri: http://localhost:8099/
 
 
@@ -36,5 +33,5 @@ spring:
   cloud:
     config:
       label: prod
-      name: eureka,mysql,redis,rabbitmq,${spring.application.name}
+      name: eureka,mysql,commom,redis,rabbitmq,${spring.application.name}
       uri: http://localhost:8099/

@@ -4,13 +4,29 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zc.mapper.NotificationMessageMapper">
 
-    <select id="queryNotificationMessage" resultType="com.zc.pojo.NotificationMessage">
-        select * from notification_message where notification_message_release_time_unix &gt;= #{startTime} and
-        notification_message_release_time_unix &lt;= #{endTime}
-        <if test="type!=null ">
-             and notification_message_type_id = #{type}
+    <select id="queryNotificationMessage" resultType="com.zc.vo.NotificationVO">
+        select n.notification_message_id id ,
+        n.notification_message_admin_id adminId,
+        u.user_name adminName,
+        n.notification_message_type_id typeId,
+        nt.notification_message_type_type_name typeName,
+        n.notification_message_top top,
+        n.notification_message_describe `desc`,
+        n.notification_message_state state,
+        n.notification_message_release_time releaseTime
+        from notification_message n
+        left join `user` u on n.notification_message_admin_id=u.user_id
+        left join notification_message_type nt on n.notification_message_type_id=nt.notification_message_type_type_id
+        where n.notification_message_release_time_unix &gt;= #{startTime}
+        <if test="state!=null">
+            and n.notification_message_state = #{state}
         </if>
-         order by notification_message_release_time_unix desc limit
+         and n.notification_message_release_time_unix &lt;= #{endTime}
+        <if test="type!=null ">
+            and n.notification_message_type_id = #{type}
+        </if>
+        order by n.notification_message_release_time_unix desc limit
         #{page.currPage},#{page.pageSize}
     </select>
+
 </mapper>

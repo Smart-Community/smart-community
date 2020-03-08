@@ -35,4 +35,10 @@ public interface UserClient {
                                        @RequestParam("unit_id") int unit_id,
                                        @RequestParam("number") int number,
                                        @RequestParam("isOwner")int isOwner);
+
+    @PostMapping("/v1.0/password/set")
+    public Map<String, Object> setPassword(@RequestParam(value = "phone", required = false) String phone,
+                                           @RequestParam(value = "userId", required = false) Long userId,
+                                           @RequestParam("type") Integer type,
+                                           @RequestParam("password") String password);
 }

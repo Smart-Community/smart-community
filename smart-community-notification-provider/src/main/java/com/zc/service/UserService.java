@@ -10,6 +10,7 @@ import com.zc.util.TokenUtil;
 import com.zc.vo.ResultWrap;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -84,13 +85,40 @@ public class UserService {
     public Map<String, Object> addUser(User user, @RequestParam("tung_id") int tung_id,
                                        @RequestParam("unit_id") int unit_id,
                                        @RequestParam("number") int number,
-                                       @RequestParam("isOwner")int isOwner) {
+                                       @RequestParam("isOwner") int isOwner) {
         user.setUserPassword(MD5.getMD5String("123456"));
-        House house = houseBusiness.findByTungIdAndUnitIdAndNumber(tung_id,unit_id,number);
-        if (house==null){
-            return  ResultWrap.init(CommonConstants.FALIED,"房屋不存在");
+        House house = houseBusiness.findByTungIdAndUnitIdAndNumber(tung_id, unit_id, number);
+        if (house == null) {
+            return ResultWrap.init(CommonConstants.FALIED, "房屋不存在");
         }
-        return ResultWrap.init(CommonConstants.SUCCESS,"添加用户成功",userBusiness.addUser(user,house.getHouseId(),isOwner));
+        return ResultWrap.init(CommonConstants.SUCCESS, "添加用户成功", userBusiness.addUser(user, house.getHouseId(),
+                isOwner));
+    }
+
+    /**
+     * type=1   根据userId设置   type=2 根据手机号设置
+     *
+     * @param phone
+     * @param userId
+     * @param type
+     * @param password
+     * @return
+     */
+    @ApiOperation("设置密码")
+    @PostMapping("/v1.0/password/set")
+    public Map<String, Object> setPassword(@RequestParam(value = "phone", required = false) String phone,
+                                           @RequestParam(value = "userId", required = false) Long userId,
+                                           @RequestParam("type") Integer type,
+                                           @RequestParam("password") String password) {
+        User user;
+        if (type == 1) {
+            user = userBusiness.findByUserId(userId);
+        } else {
+            user = userBusiness.findByPhone(phone);
+        }
+        user.setUserPassword(MD5.getMD5String(password));
+        userBusiness.save(user);
+        return ResultWrap.init(CommonConstants.SUCCESS, "修改成功");
     }
 
 
@@ -103,9 +131,12 @@ public class UserService {
             return ResultWrap.init(CommonConstants.FALIED, "账户或密码错误");
         }
         String token = TokenUtil.createToken(user.getUserId(), user.getUserPhone());
+        User catUser = new User();
+        BeanUtils.copyProperties(user, catUser);
+        catUser.setUserPassword(null);
+        catUser.setToken(token);
         user.setUserLastLoginTime(new Date());
         userBusiness.save(user);
-        user.setToken(token).setUserPassword(null);
-        return ResultWrap.init(CommonConstants.SUCCESS, "登录成功", user);
+        return ResultWrap.init(CommonConstants.SUCCESS, "登录成功", catUser);
     }
 }

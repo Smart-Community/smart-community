@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Data-Table 表格</title>
+    <link rel="stylesheet" href="/frame/layui/css/layui.css">
+    <!--<link rel="stylesheet" href="http://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">-->
+    <link rel="stylesheet" href="/frame/static/css/style.css">
+    <link rel="icon" href="/frame/static/image/code.png">
+</head>
+<body class="body">
+
+<!-- 工具集 -->
+<div class="my-btn-box">
+    <span class="fl">
+        <a class="layui-btn layui-btn-danger radius btn-add" id="btn-delete-all">发布通知</a>
+        <!--        <a class="layui-btn btn-add btn-default" id="btn-add">添加</a>-->
+        <a class="layui-btn btn-add btn-default" id="btn-refresh"><i class="layui-icon">&#x1002;</i></a>
+    </span>
+    <span class="fr">
+        <form class="layui-form" style="display: inline-block" action="">
+            <div class="layui-input-inline">
+            <select id="select">
+                <option value="1">发布时间</option>
+            </select>
+            </div></form>
+         <div class="layui-input-inline">
+            <input type="text" id="startTime" placeholder="yyyy-MM-dd HH:mm:ss" class="layui-input">
+        </div>--
+        <div class="layui-input-inline">
+            <input type="text" id="endTime" placeholder="yyyy-MM-dd HH:mm:ss" class="layui-input">
+        </div>
+        <button class="layui-btn mgl-20" id="search">查询</button>
+    </span>
+</div>
+
+<!-- 表格 -->
+<table id="dateTable" lay-filter="test"></table>
+
+<!--是否显示-->
+<script type="text/javascript" id="isHidden">
+    {{# if (d.state == 1) { }}
+    <span style = "color:red;font-weight:700"> 隐藏 </span>
+        {{# }else{ }}
+    <span style = "color:green;font-weight:700"> 显示 </span>
+        {{# }}}
+</script>
+<script type="text/javascript" src="/frame/layui/layui.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+<script src="../js/request-function.js"></script>
+<script type="text/javascript">
+
+
+    Date.prototype.Format = function (fmt) { //author: meizz
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
+    function createFormat(o) {
+        return o;
+    }
+
+    // layui方法
+    layui.use(['table', 'laypage','form', 'layer', 'vip_table'], function () {
+        var currID=1;
+        // 操作对象
+        var form = layui.form
+            , table = layui.table
+            , layer = layui.layer
+            , vipTable = layui.vip_table
+            , laypage = layui.laypage
+            , $ = layui.jquery;
+
+
+        // 表格渲染
+        var tableIns = table.render({
+            elem: '#dateTable'                  //指定原始表格元素选择器（推荐id选择器）
+            , height: vipTable.getFullHeight()    // 容器高度
+            , cols: [[                  //标题栏
+                {checkbox: false, sort: true, fixed: true, space: true}
+                // , {width:60 ,title:'序号',fixed:'left',align:'center',templet:'<span>{{xuhao()}}</span>'}
+                , {field: 'id',align:'center', title: '公告ID', width: 150}
+                , {field: 'adminName', align:'center',title: '发布人', width: 150}
+                , {field: 'top',align:'center', title: '主题', width: 150}
+                , {field: 'typeName', align:'center',title: '类型', width: 100}
+                , {field: 'releaseTime', align:'center',title: '发布时间', width: 180}
+                , {templet: '#isHidden', align: 'center', title: '状态', width: 90}
+                , {title: '操作', width: 160, align: 'center', toolbar: '#barOption'} //这里的toolbar值是模板元素的选择器
+            ]]
+            , id: 'dataCheck'
+            , url: '/consumer/public/notification/query'
+            , method: 'post'
+            , page: true
+            , limits: [10, 30, 60, 90, 150, 300]
+            , limit: 10 //默认采用10
+            , loading: true
+            , count: "totalCount"
+            , done: function (res, curr, count) {
+
+            }
+        });
+
+        $("#btn-delete-all").click(function () {
+            layui.use('layer', function () {
+                parent.layer.open({
+                    type: 2,
+                    title: '发布通知',
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['800px', '100%'],
+                    content: 'add-notification.html?token=' + getQueryVariable(),
+                    end: function () {
+                        $(".layui-laypage-btn").click()
+                    }
+                });
+            });
+        })
+
+        // 获取选中行
+        table.on('checkbox(dataCheck)', function (obj) {
+            layer.msg('123');
+            console.log(obj.checked); //当前是否选中状态
+            console.log(obj.data); //选中行的相关数据
+            console.log(obj.type); //如果触发的是全选，则为：all，如果触发的是单选，则为：one
+        });
+        //添加
+
+        // 刷新
+        $('#btn-refresh').on('click', function () {
+            $(".layui-laypage-btn").click()
+        });
+
+        //查询搜索
+        $("#search").click(function () {
+            var startTime = $("#startTime").val();
+            var endTime = $("#endTime").val();
+            if (endTime == "") {
+                endTime = new Date().Format("yyyy-MM-dd HH:mm:ss");
+            }
+            console.log(endTime)
+            //刷新表格数据（重载）传输参数
+            tableIns.reload({
+                where: {
+                    startTime: startTime,
+                    endTime: endTime
+                },
+                page: {
+                    curr: 1
+                }
+            });
+        });
+
+        table.on('tool(test)', function(obj){
+            var obj=obj;
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+            if(layEvent === 'edit'){ //编辑
+                layui.use('layer', function(){
+                    if(data.state==0){
+                        parent.layer.msg("已显示")
+                    }else {
+                        parent.layer.confirm("您确定隐藏吗？",function() {
+                            $.ajax({
+                                url:'/consumer/admin/notification/state/update',
+                                data:{
+                                    id:data.id,
+                                    state:1
+                                },
+                                headers:{
+                                    "token":getQueryVariable()
+                                },
+                                type:'post',
+                                dataType:'json',
+                                success:function (res) {
+                                    if(res.resp_code==000000){
+                                        $(".layui-laypage-btn").click()
+                                    }else{
+                                        parent.layer.msg("隐藏失败")
+                                    }
+                                }
+                            })
+                        })
+                    }
+                });
+            } else if(layEvent === 'del'){
+                if(data.state==1){
+                    parent.layer.msg("已隐藏")
+                }else{
+                    parent.layer.confirm("您确定隐藏吗？",function() {
+                    $.ajax({
+                        url:'/consumer/admin/notification/state/update',
+                        data:{
+                            id:data.id,
+                            state:0
+                        },
+                        headers:{
+                            "token":getQueryVariable()
+                        },
+                        type:'post',
+                        dataType:'json',
+                        success:function (res) {
+                            if(res.resp_code=000000){
+                                $(".layui-laypage-btn").click()
+                            }else{
+                                parent.layer.msg("隐藏失败")
+                            }
+                        }
+                    })
+                    })
+                }
+            }
+
+        });
+
+        // you code ...
+    });
+    /**
+     *渲染日期选择框
+     */
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#startTime',
+            type: 'datetime',
+            format: 'yyyy-MM-dd HH:mm:ss'
+        });
+        laydate.render({
+            elem: '#endTime',
+            type: 'datetime',
+            format: 'yyyy-MM-dd HH:mm:ss'
+        })
+    });
+</script>
+<!-- 表格操作按钮集 -->
+<script type="text/html" id="barOption">
+    {{# if(d.state == 1){ }}
+    <a class="layui-btn layui-btn-mini layui-btn-normal" lay-event="edit">显示</a>
+        {{# }else{}}
+    <a class="layui-btn layui-btn-mini layui-btn-danger" lay-event="del"> 隐藏</a>
+        {{# }}}
+</script>
+<!--订单详细页面弹出框-->
+<script type="text/javascript" >
+
+</script>
+</body>
+</html>

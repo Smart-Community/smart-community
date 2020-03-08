@@ -33,15 +33,15 @@ public class ActivityInformation implements Serializable {
     private long activityInformationReleaserId;
 
     @Column(name = "activity_information_release_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date activityInformationReleaseTime;
 
     @Column(name = "activity_infomation_join_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date joinTime;
 
     @Column(name = "activity_information_start_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date activityInformationStartTime;
 
     @Column(name = "activity_information_number")

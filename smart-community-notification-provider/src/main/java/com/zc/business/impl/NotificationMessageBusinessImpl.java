@@ -4,12 +4,13 @@ import com.zc.business.NotificationMessageBusiness;
 import com.zc.mapper.NotificationMessageMapper;
 import com.zc.pojo.NotificationMessage;
 import com.zc.repository.NotificationMessageRepository;
-import com.zc.vo.Page;
+import com.zc.vo.NotificationVO;
+import com.zc.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.management.Notification;
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class NotificationMessageBusinessImpl implements NotificationMessageBusin
     @Autowired
     private NotificationMessageRepository notificationMessageRepository;
 
-    @Autowired
+    @Resource
     private NotificationMessageMapper notificationMessageMapper;
 
     @Override
@@ -42,20 +43,27 @@ public class NotificationMessageBusinessImpl implements NotificationMessageBusin
     }
 
     @Override
-    public Page queryNotification(int pageSize, int pageNum,Integer type , Long startTime, long endTime) {
+    public com.zc.vo.Page queryNotification(int pageSize, int pageNum, Integer type,Integer state, Long startTime, long endTime) {
         Page page = new Page();
         page.setCurrPageNo(pageNum);
         page.setPageSize(pageSize);
-        List<NotificationMessage> list = notificationMessageMapper.queryNotificationMessage(page,  type ,startTime, endTime);
+        List<NotificationVO> list = notificationMessageMapper.queryNotificationMessage(page, type, state,startTime,
+                endTime);
         int total = (int) notificationMessageRepository.count();
-        page.setTotalCount(total);
-        page.setObjectList(list);
-        return page;
+        com.zc.vo.Page<NotificationVO> pages = new com.zc.vo.Page<>();
+        pages.setTotal(total);
+        pages.setContent(list);
+        return pages;
     }
 
     @Override
     public NotificationMessage save(NotificationMessage notification) {
         return notificationMessageRepository.save(notification);
+    }
+
+    @Override
+    public NotificationMessage findById(Long id) {
+        return notificationMessageRepository.findById(id).get();
     }
 
 }

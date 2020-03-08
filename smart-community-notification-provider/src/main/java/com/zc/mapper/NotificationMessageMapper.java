@@ -1,7 +1,7 @@
 package com.zc.mapper;
 
-import com.zc.pojo.NotificationMessage;
-import com.zc.vo.Page;
+import com.zc.vo.NotificationVO;
+import com.zc.util.Page;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -11,6 +11,7 @@ import java.util.List;
  * @create 2020-02-07-21:44
  */
 public interface NotificationMessageMapper {
-    List<NotificationMessage> queryNotificationMessage(@Param("page") Page page, @Param("type") Integer type,@Param("startTime") long startTime,
-                                                       @Param("endTime") long endTime);
+    List<NotificationVO> queryNotificationMessage(@Param("page") Page page, @Param("type") Integer type,
+                                                  @Param("state") Integer state, @Param("startTime") long startTime,
+                                                  @Param("endTime") long endTime);
 }
