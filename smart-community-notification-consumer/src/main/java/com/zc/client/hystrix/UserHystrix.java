@@ -2,6 +2,7 @@ package com.zc.client.hystrix;
 
 import com.zc.client.UserClient;
 import com.zc.pojo.User;
+import com.zc.vo.LayuiVO;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -35,12 +36,27 @@ public class UserHystrix implements UserClient {
     }
 
     @Override
-    public Map<String, Object> addUser(User user, int tung_id, int unit_id, int number, int isOwner) {
+    public Map<String, Object> addUser(User user) {
         return null;
     }
 
     @Override
     public Map<String, Object> setPassword(String phone, Long userId, Integer type, String password) {
+        return null;
+    }
+
+    @Override
+    public LayuiVO queryUserByHouseId(Long houseId) {
+        return null;
+    }
+
+    @Override
+    public LayuiVO queryUser(String userName, String phone, Integer state, Integer pageIndex, Integer pageSize) {
+        return null;
+    }
+
+    @Override
+    public Object stateUpdate(Long userId, Integer state) {
         return null;
     }
 }

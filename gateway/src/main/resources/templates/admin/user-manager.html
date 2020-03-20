@@ -16,23 +16,27 @@
 <!-- 工具集 -->
 <div class="my-btn-box">
     <span class="fl">
-        <a class="layui-btn layui-btn-danger radius btn-add" id="btn-delete-all">发布通知</a>
+        <a class="layui-btn layui-btn-danger radius btn-add" id="btn-delete-all">新增用户</a>
         <!--        <a class="layui-btn btn-add btn-default" id="btn-add">添加</a>-->
         <a class="layui-btn btn-add btn-default" id="btn-refresh"><i class="layui-icon">&#x1002;</i></a>
     </span>
     <span class="fr">
+        <span class="layui-form-label">姓名</span>
+         <div class="layui-input-inline">
+            <input type="text" autocomplete="off" id="userName" class="layui-input">
+        </div>
+        <span class="layui-form-label">手机号</span>
+        <div class="layui-input-inline">
+            <input type="text" autocomplete="off" id="phone" maxlength="11" minlength="11" class="layui-input">
+        </div>
         <form class="layui-form" style="display: inline-block" action="">
             <div class="layui-input-inline">
             <select id="select">
-                <option value="1">发布时间</option>
+                 <option value=""></option>
+                <option value="1">正常</option>
+                <option value="2">禁用</option>
             </select>
             </div></form>
-         <div class="layui-input-inline">
-            <input type="text" id="startTime" placeholder="yyyy-MM-dd HH:mm:ss" class="layui-input">
-        </div>--
-        <div class="layui-input-inline">
-            <input type="text" id="endTime" placeholder="yyyy-MM-dd HH:mm:ss" class="layui-input">
-        </div>
         <button class="layui-btn mgl-20" id="search">查询</button>
     </span>
 </div>
@@ -42,10 +46,21 @@
 
 <!--是否显示-->
 <script type="text/javascript" id="isHidden">
-    {{# if (d.state == 1) { }}
-    <span style = "color:red;font-weight:700"> 隐藏 </span>
+    {{# if (d.userState == 1) { }}
+    <span style = "color:red;font-weight:700"> 禁用 </span>
         {{# }else{ }}
-    <span style = "color:green;font-weight:700"> 显示 </span>
+    <span style = "color:green;font-weight:700"> 正常 </span>
+        {{# }}}
+</script>
+<!--格式化时间-->
+<script type="text/javascript" id="lastTime">
+    {{# date('Y-m-d H:i:s',d.userLastLoginTime) }}
+</script>
+<script type="text/javascript" id="role">
+    {{# if (d.userRoleId == 1) { }}
+    <span style = "color:red;font-weight:700"> 管理员 </span>
+        {{# }else{ }}
+    <span style = "color:green;font-weight:700"> 业主 </span>
         {{# }}}
 </script>
 <script type="text/javascript" src="/frame/layui/layui.js"></script>
@@ -53,26 +68,6 @@
 <script src="../js/request-function.js"></script>
 <script type="text/javascript">
 
-
-    Date.prototype.Format = function (fmt) { //author: meizz
-        var o = {
-            "M+": this.getMonth() + 1, //月份
-            "d+": this.getDate(), //日
-            "H+": this.getHours(), //小时
-            "m+": this.getMinutes(), //分
-            "s+": this.getSeconds(), //秒
-            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
-            "S": this.getMilliseconds() //毫秒
-        };
-        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-        for (var k in o)
-            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-        return fmt;
-    }
-
-    function createFormat(o) {
-        return o;
-    }
 
     // layui方法
     layui.use(['table', 'laypage','form', 'layer', 'vip_table'], function () {
@@ -93,19 +88,22 @@
             , cols: [[                  //标题栏
                 {checkbox: false, sort: true, fixed: true, space: true}
                 // , {width:60 ,title:'序号',fixed:'left',align:'center',templet:'<span>{{xuhao()}}</span>'}
-                , {field: 'id',align:'center', title: '公告ID', width: 150}
-                , {field: 'adminName', align:'center',title: '发布人', width: 150}
-                , {field: 'top',align:'center', title: '主题', width: 150}
-                , {field: 'desc',align:'center', title: '内容', width: 200}
-                , {field: 'typeName', align:'center',title: '类型', width: 100}
-                , {field: 'releaseTime', align:'center',title: '发布时间', width: 180}
+                , {field: 'userId',align:'center', title: '用户ID', width: 150}
+                , {field: 'userName', align:'center',title: '姓名', width: 150}
+                , {field: 'userPhone',align:'center', title: '手机号', width: 150}
+                , {field: 'userLogin',align:'center', title: '登录名', width: 200}
+                , {field: 'userLastLoginTime', align:'center',title: '最近登录时间', width: 180}
                 , {templet: '#isHidden', align: 'center', title: '状态', width: 90}
+                , {templet: '#role', align: 'center', title: '状态', width: 90}
                 , {title: '操作', width: 160, align: 'center', toolbar: '#barOption'} //这里的toolbar值是模板元素的选择器
             ]]
             , id: 'dataCheck'
-            , url: '/consumer/public/notification/query'
+            , url: '/consumer/public/user/query'
             , method: 'post'
             , page: true
+            , where: {
+                "token":getQueryVariable()
+            }
             , limits: [10, 30, 60, 90, 150, 300]
             , limit: 10 //默认采用10
             , loading: true
@@ -119,12 +117,12 @@
             layui.use('layer', function () {
                 parent.layer.open({
                     type: 2,
-                    title: '发布通知',
+                    title: '新增用户',
                     shadeClose: true,
                     shade: false,
                     maxmin: true, //开启最大化最小化按钮
                     area: ['800px', '100%'],
-                    content: 'admin/add-notification.html?token=' + getQueryVariable(),
+                    content: 'admin/add-user.html?token=' + getQueryVariable(),
                     end: function () {
                         $(".layui-laypage-btn").click()
                     }
@@ -171,16 +169,31 @@
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
-            if(layEvent === 'edit'){ //编辑
+            if (layEvent === 'detail') {
+                console.log(data.userId)
+                var layer = layui.layer;
+                layui.use('layer', function () {
+                    parent.layer.open({
+                        type: 2,
+                        title: '订单详情',
+                        shadeClose: true,
+                        shade: false,
+                        maxmin: true, //开启最大化最小化按钮
+                        area: ['800px', '100%'],
+                        content: '/user/house.html?token='+getQueryVariable() +'&userId='+ data.userId
+                    });
+                });
+
+            } else  if(layEvent === 'edit'){ //编辑
                 layui.use('layer', function(){
                     if(data.state==0){
-                        parent.layer.msg("已显示")
+                        parent.layer.msg("已启用")
                     }else {
-                        parent.layer.confirm("您确定显示吗？",function() {
+                        parent.layer.confirm("确定启用该用户吗？",function() {
                             $.ajax({
-                                url:'/consumer/admin/notification/state/update',
+                                url:'/consumer/admin/user/state/update',
                                 data:{
-                                    id:data.id,
+                                    userId:data.userId,
                                     state:0
                                 },
                                 headers:{
@@ -190,10 +203,10 @@
                                 dataType:'json',
                                 success:function (res) {
                                     if(res.resp_code==000000){
-                                        parent.layer.msg("显示成功")
+                                        parent.layer.msg("启用成功")
                                         $(".layui-laypage-btn").click()
                                     }else{
-                                        parent.layer.msg("隐藏失败")
+                                        parent.layer.msg("启用失败")
                                     }
                                 }
                             })
@@ -202,13 +215,13 @@
                 });
             } else if(layEvent === 'del'){
                 if(data.state==1){
-                    parent.layer.msg("已隐藏")
+                    parent.layer.msg("已禁用")
                 }else{
-                    parent.layer.confirm("您确定隐藏吗？",function() {
+                    parent.layer.confirm("确定禁用该用户吗？",function() {
                     $.ajax({
-                        url:'/consumer/admin/notification/state/update',
+                        url:'/consumer/admin/user/state/update',
                         data:{
-                            id:data.id,
+                            userId:data.userId,
                             state:1
                         },
                         headers:{
@@ -218,10 +231,10 @@
                         dataType:'json',
                         success:function (res) {
                             if(res.resp_code==000000){
-                                parent.layer.msg("隐藏成功")
+                                parent.layer.msg("禁用成功")
                                 $(".layui-laypage-btn").click()
                             }else{
-                                parent.layer.msg("隐藏失败")
+                                parent.layer.msg("禁用失败")
                             }
                         }
                     })
@@ -233,31 +246,16 @@
 
         // you code ...
     });
-    /**
-     *渲染日期选择框
-     */
-    layui.use('laydate', function () {
-        var laydate = layui.laydate;
 
-        //执行一个laydate实例
-        laydate.render({
-            elem: '#startTime',
-            type: 'datetime',
-            format: 'yyyy-MM-dd HH:mm:ss'
-        });
-        laydate.render({
-            elem: '#endTime',
-            type: 'datetime',
-            format: 'yyyy-MM-dd HH:mm:ss'
-        })
-    });
+
 </script>
 <!-- 表格操作按钮集 -->
 <script type="text/html" id="barOption">
-    {{# if(d.state == 1){ }}
-    <a class="layui-btn layui-btn-mini layui-btn-normal" lay-event="edit">显示</a>
+    <a class="layui-btn layui-btn-mini " lay-event="detail">房屋</a>
+    {{# if(d.userState == 1){ }}
+    <a class="layui-btn layui-btn-mini layui-btn-normal" lay-event="edit">启用</a>
         {{# }else{}}
-    <a class="layui-btn layui-btn-mini layui-btn-danger" lay-event="del"> 隐藏</a>
+    <a class="layui-btn layui-btn-mini layui-btn-danger" lay-event="del"> 禁用</a>
         {{# }}}
 </script>
 <!--订单详细页面弹出框-->

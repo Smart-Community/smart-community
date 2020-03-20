@@ -1,6 +1,7 @@
 package com.zc.business;
 
 import com.zc.pojo.FaultMaintenance;
+import com.zc.vo.LayuiVO;
 
 /**
  * @author 小帅气
@@ -11,4 +12,6 @@ public interface FaultMaintenanceBusiness {
     FaultMaintenance save(FaultMaintenance faultMaintenance);
 
     FaultMaintenance createFaultMaintenance( long userId,int typeId,String desc,String address,String phone);
+
+    LayuiVO queryFaultHistory(Long userId,Integer type,Integer state,Integer pageIndex,Integer pageSize);
 }

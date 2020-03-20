@@ -28,14 +28,6 @@ public class SmsService {
     private final Logger LOG = LoggerFactory.getLogger(getClass());
     private final static String PHONE_REGEX = "^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(17[013678])|(18[0,5-9]))" +
             "\\d{8}$";
-    @Value("${sms.accesskey}")
-    private String ACCESSKEY;
-    @Value("${sms.secretkey}")
-    private String SECRETKEY;
-    @Value("${sms.sign}")
-    private String SIGN;
-    @Value("${sms.moblie}")
-    private String moblie;
     @Autowired
     private RedisUtil redisUtil;
     private Random random;

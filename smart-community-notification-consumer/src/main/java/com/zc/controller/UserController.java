@@ -9,6 +9,8 @@ import com.zc.pojo.User;
 import com.zc.util.CommonConstants;
 import com.zc.util.RedisUtil;
 import com.zc.util.TokenUtil;
+import com.zc.util.VerifyTokenUtil;
+import com.zc.vo.LayuiVO;
 import com.zc.vo.ResultWrap;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -46,6 +48,9 @@ public class UserController {
 
     @Autowired
     private MenuClient menuClient;
+
+    @Autowired
+    private VerifyTokenUtil verifyTokenUtil;
 
     @ApiOperation(value = "用户登录")
     @PostMapping("/public/user/login")
@@ -93,10 +98,9 @@ public class UserController {
     }
 
     @ApiOperation("新增用户")
-    @PostMapping("/public/user/add")
-    public Object addUser(User user, @RequestParam("tung_id") int tung_id, @RequestParam("unit_id") int unit_id,
-                          @RequestParam("number") int number, @RequestParam("isOwner") int isOwner) {
-        return userClient.addUser(user, tung_id, unit_id, number, isOwner);
+    @PostMapping("/admin/user/add")
+    public Object addUser(User user) {
+        return userClient.addUser(user);
     }
 
     @GetMapping("/user/get")
@@ -116,6 +120,20 @@ public class UserController {
         return ResultWrap.init(CommonConstants.SUCCESS, "成功", user);
     }
 
+    @ApiOperation("分页查询用户")
+    @RequestMapping("/public/user/query")
+    public LayuiVO queryUser(@RequestParam("token") String token,
+                             @RequestParam(value = "userName", required = false) String userName,
+                             @RequestParam(value = "phone", required = false) String phone,
+                             @RequestParam(value = "state", required = false) Integer state,
+                             @RequestParam(value = "page", required = false, defaultValue = "1") Integer pageIndex,
+                             @RequestParam(value = "limit", required = false, defaultValue = "20") Integer pageSize) {
+        if (!verifyTokenUtil.verify(token, "admin")) {
+            return null;
+        }
+        return userClient.queryUser(userName, phone, state, pageIndex, pageSize);
+    }
+
     @ApiOperation("注销")
     @GetMapping("/user/cancel")
     public Object userCancel(@RequestHeader("token") String token) {
@@ -130,6 +148,14 @@ public class UserController {
         return ResultWrap.init(CommonConstants.SUCCESS, "注销成功");
     }
 
+    @ApiOperation("禁用或启用")
+    @RequestMapping("/admin/user/state/update")
+    public Object updateState(@RequestParam("userId") Long userId,
+                              @RequestParam("state") Integer state) {
+        userClient.stateUpdate(userId, state);
+        return ResultWrap.init(CommonConstants.SUCCESS, "修改成功");
+    }
+
     @ApiOperation("修改密码")
     @PostMapping("/user/password/update")
     public Object updatePwd(@RequestHeader("token") String token, @RequestParam("newPwd") String newPwd) {
@@ -142,8 +168,6 @@ public class UserController {
         }
         return userClient.setPassword(null, userId, 1, newPwd);
     }
-
-    @ApiOperation("给用户设置密码")
 
 
     @GetMapping("/public/menu/get")
@@ -165,6 +189,16 @@ public class UserController {
             map.put("href", map.get("href") + "?token=" + token);
         }
         return menuListByRoleId;
+    }
+
+    @GetMapping("/public/user/by/houseId/{houseId}")
+    public LayuiVO byHouseId(@RequestParam("token") String token,
+                             @PathVariable("houseId") Long houseId) {
+        if (!verifyTokenUtil.verify(token, "admin")) {
+            return null;
+        }
+        return userClient.queryUserByHouseId(houseId);
+
     }
 
 

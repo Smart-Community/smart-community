@@ -1,12 +1,15 @@
 package com.zc.business.impl;
 
 import com.zc.business.FaultMaintenanceBusiness;
+import com.zc.mapper.FaultMaintenanceMapper;
 import com.zc.pojo.FaultMaintenance;
 import com.zc.repository.FaultMaintenanceRepository;
+import com.zc.vo.LayuiVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.Date;
 
 /**
@@ -17,6 +20,10 @@ import java.util.Date;
 public class FaultMaintenanceBusinessImpl implements FaultMaintenanceBusiness {
     @Autowired
     private FaultMaintenanceRepository faultMaintenanceRepository;
+
+    @Resource
+    private FaultMaintenanceMapper faultMaintenanceMapper;
+
 
     @Override
     public FaultMaintenance save(FaultMaintenance faultMaintenance) {
@@ -37,4 +44,8 @@ public class FaultMaintenanceBusinessImpl implements FaultMaintenanceBusiness {
         return faultMaintenanceRepository.save(faultMaintenance);
     }
 
+    @Override
+    public LayuiVO queryFaultHistory(Long userId, Integer type, Integer state, Integer pageIndex, Integer pageSize) {
+        return null;
+    }
 }

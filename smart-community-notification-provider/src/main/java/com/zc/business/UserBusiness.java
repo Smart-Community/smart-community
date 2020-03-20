@@ -1,6 +1,10 @@
 package com.zc.business;
 
 import com.zc.pojo.User;
+import com.zc.vo.LayuiVO;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author 小帅气
@@ -16,5 +20,13 @@ public interface UserBusiness {
 
     User save(User user);
 
-    User addUser(User user,long houseId,int isOwner);
+    User addUser(User user);
+
+    List<Map<String,Object>> findByHouseId(Long houseId);
+
+    Integer countByHouseId(Long houseId);
+
+    LayuiVO query(String userName,String phone,Integer state,Integer pageIndex,Integer pageSize);
+
+    User updateState(Long userId,Integer state);
 }

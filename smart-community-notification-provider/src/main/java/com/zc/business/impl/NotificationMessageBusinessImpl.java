@@ -36,7 +36,7 @@ public class NotificationMessageBusinessImpl implements NotificationMessageBusin
                 .setNotificationMessageTypeId(typeId)
                 .setNotificationMessageTop(top)
                 .setNotificationMessageDescribe(desc)
-                .setNotificationMessageState(1)
+                .setNotificationMessageState(0)
                 .setNotificationMessageReleaseTime(date)
                 .setNotificationMessageReleaseTimeUnix(date.getTime());
         return notificationMessageRepository.save(notificationMessage);
@@ -58,8 +58,9 @@ public class NotificationMessageBusinessImpl implements NotificationMessageBusin
 
     @Override
     public NotificationMessage save(NotificationMessage notification) {
-        return notificationMessageRepository.save(notification);
+        return notificationMessageRepository.saveAndFlush(notification);
     }
+
 
     @Override
     public NotificationMessage findById(Long id) {

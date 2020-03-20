@@ -39,6 +39,8 @@ public class FaultMaintenance implements Serializable {
     private Date faultMaintenanceReleaseTime;
     @Column(name = "fault_maintenance_release_time_unix")
     private long faultMaintenanceReleaseTimeUnix;
+    @Column(name = "fault_maintenance_update_time")
+    private Date updateTime;
 
 
 }

@@ -1,15 +1,14 @@
 package com.zc.controller;
 
 import com.zc.client.NotificationClient;
+import com.zc.pojo.NotificationMessage;
 import com.zc.util.CommonConstants;
+import com.zc.util.TokenUtil;
 import com.zc.vo.LayuiVO;
 import com.zc.vo.ResultWrap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
@@ -94,5 +93,21 @@ public class NotificationController {
     public Object updateState(@RequestParam("id") Long id,
                               @RequestParam("state") Integer state) {
         return notificationClient.updateState(id, state);
+    }
+
+    @PostMapping("/admin/notification/add")
+    public Object addNotification(@RequestHeader("token")String token,
+                                  @RequestParam("typeId")Integer type,
+                                  @RequestParam("top")String top,
+                                  @RequestParam("desc")String desc){
+        Long userId;
+        try {
+            userId = TokenUtil.getUserId(token);
+        } catch (Exception e) {
+            LOG.error("token解析错误");
+            return ResultWrap.init(CommonConstants.ERROR_TOKEN,"token无效");
+        }
+
+        return notificationClient.addNotification(userId,type,top,desc);
     }
 }

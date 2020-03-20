@@ -7,14 +7,13 @@ import com.zc.pojo.User;
 import com.zc.util.CommonConstants;
 import com.zc.util.MD5;
 import com.zc.util.TokenUtil;
+import com.zc.vo.LayuiVO;
 import com.zc.vo.ResultWrap;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.Map;
@@ -82,17 +81,22 @@ public class UserService {
 
     @ApiOperation("新增用户")
     @PostMapping("/v1.0/user/create")
-    public Map<String, Object> addUser(User user, @RequestParam("tung_id") int tung_id,
-                                       @RequestParam("unit_id") int unit_id,
-                                       @RequestParam("number") int number,
-                                       @RequestParam("isOwner") int isOwner) {
+    public Map<String, Object> addUser(@RequestBody User user) {
         user.setUserPassword(MD5.getMD5String("123456"));
-        House house = houseBusiness.findByTungIdAndUnitIdAndNumber(tung_id, unit_id, number);
-        if (house == null) {
-            return ResultWrap.init(CommonConstants.FALIED, "房屋不存在");
+        if (userBusiness.findByPhone(user.getUserPhone()) != null) {
+            return ResultWrap.init(CommonConstants.FALIED, "手机号已存在", userBusiness.addUser(user));
         }
-        return ResultWrap.init(CommonConstants.SUCCESS, "添加用户成功", userBusiness.addUser(user, house.getHouseId(),
-                isOwner));
+        return ResultWrap.init(CommonConstants.SUCCESS, "添加用户成功", userBusiness.addUser(user));
+    }
+
+    @PostMapping("/v1.0/user/state/update")
+    public Object stateUpdate(@RequestParam("userId") Long userId,
+                              @RequestParam("state") Integer state) {
+        if (userId == 1L) {
+            return ResultWrap.init(CommonConstants.FALIED, "不可禁用");
+        }
+        userBusiness.updateState(userId, state);
+        return ResultWrap.init(CommonConstants.SUCCESS, "修改成功");
     }
 
     /**
@@ -121,6 +125,25 @@ public class UserService {
         return ResultWrap.init(CommonConstants.SUCCESS, "修改成功");
     }
 
+    @PostMapping("/v1.0/user/by/houseId/{houseId}")
+    public LayuiVO queryUserByHouseId(@PathVariable("houseId") Long houseId) {
+        LayuiVO layuiVO = new LayuiVO();
+        layuiVO.setData(userBusiness.findByHouseId(houseId));
+        layuiVO.setCount(userBusiness.countByHouseId(houseId));
+        layuiVO.setCode(0);
+        layuiVO.setMsg("查询成功");
+        return layuiVO;
+    }
+
+    @RequestMapping("/v1.0/user/query/page")
+    public LayuiVO queryUser(@RequestParam(value = "userName", required = false) String userName,
+                             @RequestParam(value = "phone", required = false) String phone,
+                             @RequestParam(value = "state", required = false) Integer state,
+                             @RequestParam(value = "page", required = false, defaultValue = "1") Integer pageIndex,
+                             @RequestParam(value = "limit", required = false, defaultValue = "20") Integer pageSize) {
+
+        return userBusiness.query(userName, phone, state, pageIndex, pageSize);
+    }
 
     private Map<String, Object> verifyLogin(User user, String password) {
         if (user == null) {

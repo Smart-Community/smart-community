@@ -25,7 +25,7 @@ public class PropertyPayment implements Serializable {
     private long propertyPaymentId;
     @Column(name = "property_payment_house_id")
     private long propertyPaymentHouseId;
-    @Column(name = "property_payment_payer_id")
+    @Column(name = "property_payment_modify_id")
     private long propertyPaymentPayerId;
     @Column(name = "property_payment_money")
     private BigDecimal propertyPaymentMoney;

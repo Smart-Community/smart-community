@@ -71,12 +71,12 @@
 
         $("#btn").click(function () {
             data = {
-                "pageIndex": pageIndex,
+                "page": pageIndex,
                 "state":0
             }
-            request('/public/user/notification/query', header, data, "POST", f, null)
+            request('/consumer/public/notification/query', header, data, "POST", f, null)
         })
-        $(request('/public/user/notification/query', header, data, "POST", f, null))
+        $(request('/consumer/public/notification/query', header, data, "POST", f, null))
 
         // you code ...
 

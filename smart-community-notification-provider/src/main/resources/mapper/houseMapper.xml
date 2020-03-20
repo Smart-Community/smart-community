@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zc.mapper.HouseMapper">
+
+    <select id="queryHouseInfoByUserId" resultType="map">
+        select
+         ho.house_ownership_is_owner isOwner,
+         ho.house_ownership_user_id userId,
+         h.house_id houseId,
+         h.house_tung_id tungId,
+         h.house_unit_id unitId,
+         h.house_number `number`,
+         h.house_area area,
+         h.house_state state,
+         h.house_money money
+        from house_ownership ho left join house h on ho.house_ownership_house_id = h.house_id
+        where ho.house_ownership_user_id =#{userId} limit #{pageIndex},#{pageSize}
+    </select>
+</mapper>

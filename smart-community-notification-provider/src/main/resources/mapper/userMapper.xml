@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zc.mapper.UserMapper">
+
+    <select id="findByHouseId" resultType="map">
+        select
+        ho.house_ownership_is_owner isOwner,
+        u.user_id userId,
+        u.user_name userName,
+        u.user_phone phone,
+        u.user_last_login_time lastTime,
+        u.user_state state
+        from house_ownership ho left join `user` u on u.user_id=ho.house_ownership_user_id
+        where ho.house_ownership_house_id=#{houseId}
+    </select>
+
+    <select id="countByHouseId" resultType="int">
+        select
+        count(1)
+        from house_ownership ho left join `user` u on u.user_id=ho.house_ownership_user_id
+        where ho.house_ownership_house_id=#{houseId}
+    </select>
+</mapper>
