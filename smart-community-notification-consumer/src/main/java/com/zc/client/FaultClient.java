@@ -25,11 +25,16 @@ public interface FaultClient {
                                         @RequestParam("addr")String addr,
                                         @RequestParam("phone")String phone);
 
-    @RequestMapping("/v1.0/fault/history/query/{userId}")
-    public LayuiVO queryFaultHistory(@PathVariable("userId") Long userId,
+    @RequestMapping("/v1.0/fault/history/query")
+    public LayuiVO queryFaultHistory(@RequestParam(value = "userId",required = false) Long userId,
                                      @RequestParam(value = "type", required = false) Integer type,
                                      @RequestParam(value = "state", required = false) Integer state,
                                      @RequestParam(value = "page", required = false, defaultValue = "1") Integer pageIndex,
                                      @RequestParam(value = "limit", required = false, defaultValue = "20") Integer pageSize) ;
+
+
+    @RequestMapping("v1.0/fault/update/state")
+    public Object updateState(@RequestParam("id")Long id,
+                              @RequestParam("state")Integer state);
 
     }

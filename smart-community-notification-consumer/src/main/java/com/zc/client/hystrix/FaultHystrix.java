@@ -1,7 +1,9 @@
 package com.zc.client.hystrix;
 
 import com.zc.client.FaultClient;
+import com.zc.util.CommonConstants;
 import com.zc.vo.LayuiVO;
+import com.zc.vo.ResultWrap;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -20,5 +22,10 @@ public class FaultHystrix implements FaultClient {
     @Override
     public LayuiVO queryFaultHistory(Long userId, Integer type, Integer state, Integer pageIndex, Integer pageSize) {
         return null;
+    }
+
+    @Override
+    public Object updateState(Long id, Integer state) {
+        return ResultWrap.init(CommonConstants.FALIED,"系统异常");
     }
 }

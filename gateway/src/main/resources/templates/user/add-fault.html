@@ -15,13 +15,19 @@
 <body class="body">
 <!--.-->
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-        <legend>发布通知</legend>
+        <legend>故障报修</legend>
 </fieldset>
 <form class="layui-form" >
     <div class="layui-form-item">
-        <label class="layui-form-label">标题</label>
+        <label class="layui-form-label">联系电话</label>
         <div class="layui-input-block">
-            <input  type="text" id="top"  lay-verify="title" autocomplete="off"  class="layui-input">
+            <input  type="text" id="phone"  lay-verify="title" autocomplete="off"  class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">位置</label>
+        <div class="layui-input-block">
+            <input  type="text" id="address"  lay-verify="title" autocomplete="off"  class="layui-input">
         </div>
     </div>
 
@@ -33,7 +39,7 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">内容</label>
+        <label class="layui-form-label">描述</label>
         <div class="layui-input-block">
             <input type="textarea" id="desc" lay-verify="title" autocomplete="off"  class="layui-input">
         </div>
@@ -67,7 +73,7 @@
            var html = $("#select").html();
             if (res.resp_code==000000){
               $.each(res.result, function (index, value) {
-                  html = html + " <option value=\""+value.notificationMessageTypeTypeId+"\">"+value.notificationMessageTypeTypeName+"</option>"
+                  html = html + " <option value=\""+value.faultTypeId+"\">"+value.faultTypeName+"</option>"
               })
                 $("#select").html(html);
                 form.render('select');
@@ -76,7 +82,7 @@
             }
 
         }
-        $(request('/consumer/admin/notification/type/get',header,null,"GET",f,null));
+        $(request('/consumer/user/faulttype/query',header,null,"GET",f,null));
         //点击获取
         function f1(res){
             if (res.resp_code==000000){
@@ -92,11 +98,12 @@
         }
         $("#sumbit").click(function () {
             var data1= ({
-                "typeId":$("#select").val(),
-                "top":$("#top").val(),
-                "desc":$("#desc").val()
+                "type":$("#select").val(),
+                "desc":$("#desc").val(),
+                "addr":$("#address").val(),
+                "phone":$("#phone").val()
             })
-            request('/consumer/admin/notification/add',header,data1,"POST",f1,null)
+            request('/consumer/user/fault/add',header,data1,"POST",f1,null)
         });
     });
 </script>

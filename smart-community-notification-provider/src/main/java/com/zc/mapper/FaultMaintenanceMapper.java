@@ -1,5 +1,6 @@
 package com.zc.mapper;
 
+import com.zc.vo.FaultVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -11,16 +12,14 @@ import java.util.Map;
  */
 public interface FaultMaintenanceMapper {
 
-    List<Map<String,Object>> queryFaultHistory(@Param("userId")Long userId,
-                                               @Param("type")Integer type,
-                                               @Param("state")Integer state,
-                                               @Param("pageIndex")Integer pageIndex,
-                                               @Param("pageSize")Integer pageSize);
+    List<FaultVO> queryFaultHistory(@Param("userId")Long userId,
+                                    @Param("type")Integer type,
+                                    @Param("state")Integer state,
+                                    @Param("pageIndex")Integer pageIndex,
+                                    @Param("pageSize")Integer pageSize);
 
     int countQuery(@Param("userId")Long userId,
                    @Param("type")Integer type,
-                   @Param("state")Integer state,
-                   @Param("pageIndex")Integer pageIndex,
-                   @Param("pageSize")Integer pageSize);
+                   @Param("state")Integer state);
 
 }

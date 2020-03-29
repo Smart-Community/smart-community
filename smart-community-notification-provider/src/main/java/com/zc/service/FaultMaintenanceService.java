@@ -19,24 +19,32 @@ public class FaultMaintenanceService {
     @Autowired
     private FaultMaintenanceBusiness faultMaintenanceBusiness;
 
-    @RequestMapping("/v1.0/fault/history/query/{userId}")
-    public LayuiVO queryFaultHistory(@PathVariable("userId") Long userId,
+    @RequestMapping("/v1.0/fault/history/query")
+    public LayuiVO queryFaultHistory(@RequestParam(value = "userId",required = false) Long userId,
                                      @RequestParam(value = "type", required = false) Integer type,
                                      @RequestParam(value = "state", required = false) Integer state,
                                      @RequestParam(value = "page", required = false, defaultValue = "1") Integer pageIndex,
                                      @RequestParam(value = "limit", required = false, defaultValue = "20") Integer pageSize) {
 
 
-        return null;
+        return faultMaintenanceBusiness.queryFaultHistory(userId, type, state, pageIndex, pageSize);
     }
 
     @PostMapping("/v1.0/fault/add")
-    public Map<String ,Object> addFault(@RequestParam("userId")Long userId,
-                                        @RequestParam("type")Integer type,
-                                        @RequestParam("desc")String desc,
-                                        @RequestParam("addr")String addr,
-                                        @RequestParam("phone")String phone){
-        faultMaintenanceBusiness.createFaultMaintenance(userId,type,desc,addr,phone);
-        return ResultWrap.init(CommonConstants.SUCCESS,"报修成功");
+    public Map<String, Object> addFault(@RequestParam("userId") Long userId,
+                                        @RequestParam("type") Integer type,
+                                        @RequestParam("desc") String desc,
+                                        @RequestParam("addr") String addr,
+                                        @RequestParam("phone") String phone) {
+        faultMaintenanceBusiness.createFaultMaintenance(userId, type, desc, addr, phone);
+        return ResultWrap.init(CommonConstants.SUCCESS, "报修成功");
     }
+
+    @RequestMapping("v1.0/fault/update/state")
+    public Object updateState(@RequestParam("id")Long id,
+                              @RequestParam("state")Integer state){
+        return ResultWrap.init(CommonConstants.SUCCESS,"",faultMaintenanceBusiness.updateState(id,state));
+
+    }
+
 }

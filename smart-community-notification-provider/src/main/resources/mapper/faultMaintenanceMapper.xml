@@ -4,13 +4,48 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zc.mapper.FaultMaintenanceMapper">
 
-    <select id="queryFaultHistory" resultType="map">
-
-
+    <select id="queryFaultHistory" resultType="com.zc.vo.FaultVO">
+        select
+        f.fault_maintenance_id id,
+        u.user_name userName,
+        ft.fault_type_name `type`,
+        f.fault_maintenance_addrss addr,
+        f.fault_maintenance_describe `desc`,
+        f.fault_maintenance_release_time releaseTime,
+        f.fault_maintenance_phone phone,
+        f.fault_maintenance_state state,
+        f.fault_maintenance_update_time updateTime
+        from fault_maintenance f
+        left join `user` u on u.user_id = f.fault_maintenance_user_id
+        left join fault_type ft on f.fault_maintenance_fault_type_id = ft.fault_type_id
+        <where>
+            <if test="userId!=null">
+                and   fault_maintenance_user_id = #{userId}
+            </if>
+            <if test="type!=null">
+                and   fault_maintenance_fault_type_id = #{type}
+            </if>
+            <if test="state!=null">
+                and  fault_maintenance_state = #{state}
+            </if>
+        </where>
+        order by f.fault_maintenance_release_time desc
+        limit #{pageIndex},#{pageSize}
     </select>
 
     <select id="countQuery" resultType="int">
-
+        select count(1) from fault_maintenance
+        <where>
+            <if test="userId!=null">
+                and   fault_maintenance_user_id = #{userId}
+            </if>
+            <if test="type!=null">
+                and   fault_maintenance_fault_type_id = #{type}
+            </if>
+            <if test="state!=null">
+                and  fault_maintenance_state = #{state}
+            </if>
+        </where>
 
     </select>
 </mapper>

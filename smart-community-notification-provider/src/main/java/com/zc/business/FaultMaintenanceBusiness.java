@@ -14,4 +14,6 @@ public interface FaultMaintenanceBusiness {
     FaultMaintenance createFaultMaintenance( long userId,int typeId,String desc,String address,String phone);
 
     LayuiVO queryFaultHistory(Long userId,Integer type,Integer state,Integer pageIndex,Integer pageSize);
+
+    FaultMaintenance updateState(Long id ,Integer state);
 }
