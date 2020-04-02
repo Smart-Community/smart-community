@@ -56,4 +56,7 @@ public class ActivityInformation implements Serializable {
     @Column(name = "activity_infomation_join")
     private int join;
 
+    @Column(name = "activity_infomation_status")
+    private int status;
+
 }

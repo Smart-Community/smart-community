@@ -10,7 +10,50 @@
         <where>
             activity_information_id = #{activityId}
         </where>
-
     </update>
+
+
+    <select id="queryActiveList" resultType="com.zc.vo.ActiveVO">
+        select
+        activity_information_id id,
+        activity_information_name `name`,
+        activity_information_describe `desc`,
+        user_name releaser,
+        activity_information_release_time releaseTime,
+        activity_information_start_time startTime,
+        activity_infomation_join_time joinTime,
+        activity_information_surplus_number surNumber,
+        activity_information_limit `limit`,
+        activity_infomation_join `join`,
+        activity_infomation_status state
+
+        from activity_information left join `user`
+        on activity_information_releaser_id = user_id
+        <where>
+            <if test="name!=null">
+                and activity_information_name = #{name}
+            </if>
+            <if test="status!=null">
+                and activity_infomation_status = #{status}
+            </if>
+        </where>
+        order by activity_information_release_time desc
+        limit #{pageIndex},#{pageSize}
+    </select>
+
+
+    <select id="queryActiveCount" resultType="int">
+        select
+        count(1) from activity_information
+        <where>
+            <if test="name!=null">
+                and activity_information_name = #{name}
+            </if>
+            <if test="status!=null">
+                and activity_infomation_status = #{status}
+            </if>
+        </where>
+        order by activity_information_release_time desc
+    </select>
 
 </mapper>

@@ -1,14 +1,18 @@
 package com.zc.business.impl;
 
 import com.zc.business.ActivityBusiness;
+import com.zc.enums.AcitveConstants;
 import com.zc.mapper.ActivityMapper;
 import com.zc.pojo.ActivityInformation;
 import com.zc.pojo.ActivityRegistration;
 import com.zc.repository.ActivityRegistrationRepository;
 import com.zc.repository.ActivityRepository;
 import com.zc.util.RedisUtil;
+import com.zc.vo.ActiveVO;
+import com.zc.vo.LayuiVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.zc.enums.AcitveConstants.JOIN_KEY;
+
 /**
  * @author 小帅气
  * @create 2020-02-19-20:14
@@ -30,6 +36,9 @@ public class ActivityBuinessImpl implements ActivityBusiness {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     private ActivityRepository activityRepository;
@@ -43,11 +52,28 @@ public class ActivityBuinessImpl implements ActivityBusiness {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean createNewActivity(String name, String desc, long releaserId, Date startTime, Date joinTime,
-                                     Integer sum, int limit) {
-
-        //todo 操作redis
-        return false;
+    public void createNewActivity(Long userId, String name, String desc, Date startTime,
+                                  Date joinTime,
+                                  Integer sum, short limit) {
+        ActivityInformation activityInformation = new ActivityInformation();
+        activityInformation.setActivityInformationDescribe(desc)
+                .setActivityInformationLimit(limit)
+                .setActivityInformationSurplusNumber(sum)
+                .setActivityInformationName(name)
+                .setActivityInformationStartTime(startTime)
+                .setJoinTime(joinTime)
+                .setActivityInformationNumber(sum)
+                .setStatus(0)
+                .setJoin(0)
+                .setActivityInformationReleaseTime(new Date())
+                .setActivityInformationReleaserId(userId);
+        if (limit == 0) {
+            activityInformation.setActivityInformationNumber(0);
+        }
+        ActivityInformation activityInformation1 = activityRepository.saveAndFlush(activityInformation);
+        // 操作redis
+        redisUtil.setStr(AcitveConstants.ACTIVE_KEY.getKey() + activityInformation1.getActivityInformationId() + AcitveConstants.NUM_KEY.getKey(),
+                activityInformation1.getActivityInformationNumber() + "");
     }
 
     @Override
@@ -65,7 +91,6 @@ public class ActivityBuinessImpl implements ActivityBusiness {
                 .setStatus(0);
         activityRegistrationRepository.save(activityRegistration);
         activityMapper.updateJoinNum(activityId, 1);
-        //todo 更改redis
     }
 
     @Override
@@ -80,8 +105,22 @@ public class ActivityBuinessImpl implements ActivityBusiness {
         }).get();
         activityRegistration.setStatus(0);
         activityMapper.updateJoinNum(activityId, -1);
-        //todo 更改redis
+        // 更改redis
+        stringRedisTemplate.opsForValue().increment(AcitveConstants.ACTIVE_KEY.getKey() + activityId + AcitveConstants.NUM_KEY.getKey(), -1L);
     }
 
+    @Override
+    public LayuiVO queryActiveList(String name, Integer status, Integer pageIndex, Integer pageSize) {
+        List<ActiveVO> activeVOS = activityMapper.queryActiveList(name, status, (pageIndex - 1) * pageSize, pageSize);
+        LayuiVO layuiVO = new LayuiVO();
+        layuiVO.setData(activeVOS);
+        layuiVO.setCount(activityMapper.queryActiveCount(name, status));
+        return layuiVO;
+    }
+
+    @Override
+    public ActivityInformation findById(Long id) {
+        return activityRepository.findById(id).get();
+    }
 }
 

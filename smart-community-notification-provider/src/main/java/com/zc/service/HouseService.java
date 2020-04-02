@@ -13,6 +13,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +34,40 @@ public class HouseService {
     //todo 导入数据
     @PostMapping("/admin/houseinfo/import")
     public Map<String, Object> importHouseInfo(@RequestParam("file") MultipartFile file) {
-        List<Object> list = ExcelImportUtil.importExcel("", HouseDTO.class);
+        String path = null;
+        if (file != null) {
+            // 文件路径
+            // 文件类型
+            String type = null;
+            // 文件原名称
+            String fileName = file.getOriginalFilename();
+            // 判断文件类型
+            type = fileName.indexOf(".") != -1 ?
+                    fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length()) : null;
+            // 判断文件类型是否为空
+            if (type != null) {
+                if ("PNG".equals(type.toUpperCase()) || "JPG".equals(type.toUpperCase()) || "JPEG".equals(type.toUpperCase())) {
+                    // 项目在容器中实际发布运行的根路径
+                    // 自定义的文件名称
+                    String trueFileName = System.currentTimeMillis() + "_" + fileName;
+                    // 设置存放图片文件的路径
+                    path = "D:\\Users\\xiaoshuaiqi\\Desktop\\" + trueFileName;
+                    // 转存文件到指定的路径
+                    try {
+                        file.transferTo(new File(path));
+                    } catch (IOException e) {
+                        return ResultWrap.init(CommonConstants.FALIED,"系统异常");
+                    }
+                } else {
+                    return ResultWrap.init(CommonConstants.FALIED,"类型不匹配");
+                }
+            } else {
+                return ResultWrap.init(CommonConstants.FALIED,"类型不匹配");
+            }
+        } else {
+            return ResultWrap.init(CommonConstants.FALIED,"文件为空");
+        }
+        List<Object> list = ExcelImportUtil.importExcel(path, HouseDTO.class);
         return null;
     }
 

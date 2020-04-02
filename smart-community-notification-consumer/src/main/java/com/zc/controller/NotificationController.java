@@ -29,6 +29,8 @@ public class NotificationController {
     @Resource
     private NotificationClient notificationClient;
 
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     @RequestMapping("/public/notification/query")
     public Object queryNotification(@RequestParam(value = "startTime", required = false) String startTimeString,
                                     @RequestParam(value = "endTime", required = false) String endTimeString,
@@ -57,7 +59,7 @@ public class NotificationController {
             startTime = c.getTimeInMillis();
         } else {
             try {
-                startTime = SimpleDateFormat.getDateTimeInstance().parse(startTimeString).getTime();
+                startTime = simpleDateFormat.parse(startTimeString).getTime();
             } catch (ParseException e) {
                 LOG.error("时间转化错误");
                 return ResultWrap.init(CommonConstants.FALIED, "时间格式错误");
@@ -67,7 +69,7 @@ public class NotificationController {
             endTime = System.currentTimeMillis();
         } else {
             try {
-                endTime = SimpleDateFormat.getDateTimeInstance().parse(startTimeString).getTime();
+                endTime = simpleDateFormat.parse(endTimeString).getTime();
             } catch (ParseException e) {
                 LOG.error("时间转化错误");
                 return ResultWrap.init(CommonConstants.FALIED, "时间格式错误");

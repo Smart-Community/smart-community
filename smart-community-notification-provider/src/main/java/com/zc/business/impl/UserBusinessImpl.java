@@ -93,7 +93,7 @@ public class UserBusinessImpl implements UserBusiness {
         Page<User> page = userRepository.findAll((root, criteriaQuery, criteriaBuilder) -> {
             List<Predicate> predicatesList = new ArrayList<>();
             if (StringUtils.isNotBlank(userName)) {
-                predicatesList.add(criteriaBuilder.like(root.get(userName).as(String.class), userName));
+                predicatesList.add(criteriaBuilder.like(root.get("userName").as(String.class), userName));
             }
             if (StringUtils.isNotBlank(phone)) {
                 predicatesList.add(criteriaBuilder.equal(root.get("userPhone").as(String.class), phone));
