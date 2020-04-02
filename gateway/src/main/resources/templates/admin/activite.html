@@ -20,6 +20,26 @@
         <!--        <a class="layui-btn btn-add btn-default" id="btn-add">添加</a>-->
         <a class="layui-btn btn-add btn-default" id="btn-refresh"><i class="layui-icon">&#x1002;</i></a>
     </span>
+    <span class="fr">
+        <form class="layui-form" style="display: inline-block" action="">
+             <span class="layui-form-label">姓名</span>
+         <div class="layui-input-inline">
+            <input type="text" autocomplete="off" id="name" class="layui-input">
+        </div>
+            <div class="layui-input-inline">
+            <select id="select">
+                <option value="">请选择</option>
+                <option value="0">已发布</option>
+                <option value="1">报名中</option>
+                <option value="1">已开始</option>
+                <option value="1">已结束</option>
+                <option value="1">已取消</option>
+                <option value="1">报名已满</option>
+            </select>
+            </div></form>
+
+        <button class="layui-btn mgl-20" id="search">查询</button>
+    </span>
 </div>
 
 <!-- 表格 -->
@@ -145,6 +165,8 @@
         //查询搜索
         $("#search").click(function () {
             var token =  getQueryVariable();
+            var state = $("#select").val();
+            var name = $("#name").val();
             //刷新表格数据（重载）传输参数
             tableIns.reload({
                 where: {
@@ -165,15 +187,14 @@
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
             if(layEvent === 'edit'){ //编辑
                 layui.use('layer', function(){
-                    if(data.state==0){
-                        parent.layer.msg("已显示")
+                    if(data.state==3){
+                        parent.layer.msg("已结束")
                     }else {
-                        parent.layer.confirm("您确定显示吗？",function() {
+                        parent.layer.confirm("您确定结束吗？",function() {
                             $.ajax({
-                                url:'/consumer/admin/notification/state/update',
+                                url:'/consumer/admin/activity/end',
                                 data:{
-                                    id:data.id,
-                                    state:0
+                                    id:data.id
                                 },
                                 headers:{
                                     "token":getQueryVariable()
@@ -182,10 +203,10 @@
                                 dataType:'json',
                                 success:function (res) {
                                     if(res.resp_code==000000){
-                                        parent.layer.msg("显示成功")
+                                        parent.layer.msg("结束成功")
                                         $(".layui-laypage-btn").click()
                                     }else{
-                                        parent.layer.msg("隐藏失败")
+                                        parent.layer.msg("结束失败")
                                     }
                                 }
                             })
@@ -193,7 +214,7 @@
                     }
                 });
             } else if(layEvent === 'del'){
-                if(data.state==1){
+                if(data.state==4){
                     parent.layer.msg("已取消")
                 }else{
                     parent.layer.confirm("您确定取消吗？",function() {
@@ -246,7 +267,9 @@
 <!-- 表格操作按钮集 -->
 <script type="text/html" id="barOption">
     {{# if(d.state == 2){ }}
-    --
+    <a class="layui-btn layui-btn-mini layui-btn-danger" lay-event="edit"> 结束</a>
+    {{# }else if(d.state == 4){}}
+   ---
         {{# }else{}}
     <a class="layui-btn layui-btn-mini layui-btn-danger" lay-event="del"> 取消</a>
         {{# }}}

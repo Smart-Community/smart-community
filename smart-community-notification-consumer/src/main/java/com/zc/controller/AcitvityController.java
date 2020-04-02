@@ -80,4 +80,8 @@ public class AcitvityController {
         return activityClient.updateAcitvity(id);
     }
 
+    @PostMapping("/admin/activity/end")
+    public Object endActivity(@RequestParam("id") Long id) {
+        return activityClient.endAcitvity(id);
+    }
 }

@@ -56,6 +56,20 @@ public class AcitvityService {
         return ResultWrap.init(CommonConstants.SUCCESS, "修改成功");
     }
 
+    @PostMapping("/v1.0/activity/end")
+    public Map<String, Object> endAcitvity(@RequestParam("id") Long id) {
+        ActivityInformation byId = activityBusiness.findById(id);
+        if (byId == null) {
+            return ResultWrap.init(CommonConstants.FALIED, "该活动不存在");
+        }
+        if (byId.getStatus() != 2) {
+            return ResultWrap.init(CommonConstants.FALIED,"活动还未开始");
+        }
+        byId.setStatus(3);
+        activityBusiness.update(byId);
+        return ResultWrap.init(CommonConstants.SUCCESS, "结束成功");
+    }
+
 
     @PostMapping("/v1.0/activity/query/page")
     public LayuiVO queryActivy(@RequestParam(value = "name", required = false) String name,

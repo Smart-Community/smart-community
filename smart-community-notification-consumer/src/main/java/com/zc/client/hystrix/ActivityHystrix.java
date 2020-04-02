@@ -1,7 +1,9 @@
 package com.zc.client.hystrix;
 
 import com.zc.client.ActivityClient;
+import com.zc.util.CommonConstants;
 import com.zc.vo.LayuiVO;
+import com.zc.vo.ResultWrap;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -15,12 +17,17 @@ import java.util.Map;
 public class ActivityHystrix implements ActivityClient {
     @Override
     public Map<String, Object> createNewActivity(Long releaseId, String name, String desc, Integer number, short limit, Date startTime, Date joinTime) {
-        return null;
+        return ResultWrap.init(CommonConstants.FALIED,"系统异常");
     }
 
     @Override
     public Map<String, Object> updateAcitvity(Long id) {
-        return null;
+        return ResultWrap.init(CommonConstants.FALIED,"系统异常");
+    }
+
+    @Override
+    public Map<String, Object> endAcitvity(Long id) {
+        return ResultWrap.init(CommonConstants.FALIED,"系统异常");
     }
 
     @Override

@@ -71,9 +71,7 @@ public class ActivityBuinessImpl implements ActivityBusiness {
             activityInformation.setActivityInformationNumber(0);
         }
         ActivityInformation activityInformation1 = activityRepository.saveAndFlush(activityInformation);
-        // 操作redis
-        redisUtil.setStr(AcitveConstants.ACTIVE_KEY.getKey() + activityInformation1.getActivityInformationId() + AcitveConstants.NUM_KEY.getKey(),
-                activityInformation1.getActivityInformationNumber() + "");
+
     }
 
     @Override
@@ -121,6 +119,11 @@ public class ActivityBuinessImpl implements ActivityBusiness {
     @Override
     public ActivityInformation findById(Long id) {
         return activityRepository.findById(id).get();
+    }
+
+    @Override
+    public List<ActivityInformation> findListByState(Integer state) {
+        return activityRepository.findListByState(state);
     }
 }
 

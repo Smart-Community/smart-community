@@ -31,6 +31,9 @@ public interface ActivityClient {
     public Map<String, Object> updateAcitvity(@RequestParam("id") Long id);
 
 
+    @PostMapping("/v1.0/activity/update")
+    public Map<String, Object> endAcitvity(@RequestParam("id") Long id);
+
     @PostMapping("/v1.0/activity/query/page")
     public LayuiVO queryActivy(@RequestParam("name") String name,
                                @RequestParam("status") Integer status,

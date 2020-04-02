@@ -24,4 +24,6 @@ public interface ActivityBusiness {
     LayuiVO queryActiveList(String name, Integer status,Integer pageIndex,Integer pageSize);
 
     ActivityInformation findById(Long id);
+
+    List<ActivityInformation> findListByState(Integer state);
 }
