@@ -47,8 +47,11 @@ public class ActivityScanner {
                     activityInformation.setStatus(1);
                     activityBusiness.update(activityInformation);
                     // 操作redis
-                    redisUtil.setStr(AcitveConstants.ACTIVE_KEY.getKey() + activityInformation.getActivityInformationId() + AcitveConstants.NUM_KEY.getKey(),
-                            activityInformation.getActivityInformationNumber() + "");
+                    String num = activityInformation.getActivityInformationNumber() + "";
+                    if (activityInformation.getActivityInformationLimit()==0) {
+                        num = "9999999";
+                    }
+                    redisUtil.setStr(AcitveConstants.ACTIVE_KEY.getKey() + activityInformation.getActivityInformationId() + AcitveConstants.NUM_KEY.getKey(), num);
                 }
             }
         }
