@@ -7,6 +7,7 @@ import com.zc.util.TokenUtil;
 import com.zc.util.VerifyTokenUtil;
 import com.zc.vo.LayuiVO;
 import com.zc.vo.ResultWrap;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -46,6 +47,9 @@ public class AcitvityController {
 
         if (!verifyTokenUtil.verify(token, "user")) {
             return null;
+        }
+        if (StringUtils.isBlank(name)) {
+            name = null;
         }
         return activityClient.queryActivy(name, status, pageIndex, pageSize);
     }
