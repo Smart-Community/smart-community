@@ -31,7 +31,7 @@ public interface ActivityClient {
     public Map<String, Object> updateAcitvity(@RequestParam("id") Long id);
 
 
-    @PostMapping("/v1.0/activity/update")
+    @PostMapping("/v1.0/activity/end")
     public Map<String, Object> endAcitvity(@RequestParam("id") Long id);
 
     @PostMapping("/v1.0/activity/query/page")
@@ -40,4 +40,19 @@ public interface ActivityClient {
                                @RequestParam("pageIndex") Integer pageIndex,
                                @RequestParam("pageSize") Integer pageSize);
 
+    @PostMapping("/v1.0/activity/query/page/userid")
+    public LayuiVO queryByUserActivy(@RequestParam(value = "name", required = false) String name,
+                                     @RequestParam(value = "status", required = false) Integer status,
+                                     @RequestParam(value = "userId",required = false)Long userId,
+                                     @RequestParam("pageIndex") Integer pageIndex,
+                                     @RequestParam("pageSize") Integer pageSize);
+
+    @PostMapping("/v1.0/activity/join")
+    public Object joinBy(@RequestParam("userId") Long userId,
+                         @RequestParam("id") Long id);
+
+    @PostMapping("/v1.0/activity/person/query")
+    public LayuiVO queryActivityPerson(@RequestParam("id") Long id,
+                                       @RequestParam("limit")Integer pageSize,
+                                       @RequestParam("page")Integer pageIndex);
 }

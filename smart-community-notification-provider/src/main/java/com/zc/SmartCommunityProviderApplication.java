@@ -13,6 +13,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
@@ -28,6 +29,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @EnableAsync
 @MapperScan("com.zc.mapper")
 @EnableCaching
+@EnableScheduling
 public class SmartCommunityProviderApplication {
     @Value("${spring.datasource.driver-class-name}")
     private String driver;

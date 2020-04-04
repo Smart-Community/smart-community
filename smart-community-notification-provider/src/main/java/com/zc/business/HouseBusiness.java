@@ -27,4 +27,6 @@ public interface HouseBusiness {
     List<Map<String,Object>> queryByUserId(Long userId,Integer pageIndex,Integer pageSize);
 
     void payManager(Long houseId,Long adminId,BigDecimal money);
+
+    List<String> queryAddr(Long userId);
 }

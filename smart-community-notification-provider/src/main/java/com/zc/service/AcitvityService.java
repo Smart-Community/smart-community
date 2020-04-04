@@ -6,12 +6,10 @@ import com.zc.util.CommonConstants;
 import com.zc.util.RedisUtil;
 import com.zc.vo.LayuiVO;
 import com.zc.vo.ResultWrap;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.Map;
@@ -49,7 +47,7 @@ public class AcitvityService {
             return ResultWrap.init(CommonConstants.FALIED, "该活动不存在");
         }
         if (byId.getStatus() == 2) {
-            return ResultWrap.init(CommonConstants.FALIED,"活动已开始,不可取消");
+            return ResultWrap.init(CommonConstants.FALIED, "活动已开始,不可取消");
         }
         byId.setStatus(4);
         activityBusiness.update(byId);
@@ -63,7 +61,7 @@ public class AcitvityService {
             return ResultWrap.init(CommonConstants.FALIED, "该活动不存在");
         }
         if (byId.getStatus() != 2) {
-            return ResultWrap.init(CommonConstants.FALIED,"活动还未开始");
+            return ResultWrap.init(CommonConstants.FALIED, "活动还未开始");
         }
         byId.setStatus(3);
         activityBusiness.update(byId);
@@ -79,4 +77,32 @@ public class AcitvityService {
         return activityBusiness.queryActiveList(name, status, pageIndex, pageSize);
     }
 
+    @PostMapping("/v1.0/activity/query/page/userid")
+    public LayuiVO queryByUserActivy(@RequestParam(value = "name", required = false) String name,
+                                     @RequestParam(value = "status", required = false) Integer status,
+                                     @RequestParam(value = "userId", required = false) Long userId,
+                                     @RequestParam("pageIndex") Integer pageIndex,
+                                     @RequestParam("pageSize") Integer pageSize) {
+        if (StringUtils.isBlank(name)) {
+            name = null;
+        }
+        return activityBusiness.queryUserActiveList(name, status, userId, pageIndex, pageSize);
+    }
+
+    @PostMapping("/v1.0/activity/join")
+    public Object joinBy(@RequestParam("userId") Long userId,
+                         @RequestParam("id") Long id) {
+        if (activityBusiness.queryByUserIdAndActivityId(userId, id) > 0) {
+            return ResultWrap.init(CommonConstants.FALIED, "已参加");
+        }
+        activityBusiness.join(userId, id);
+        return ResultWrap.init(CommonConstants.SUCCESS, "报名成功");
+    }
+
+    @PostMapping("/v1.0/activity/person/query")
+    public LayuiVO queryActivityPerson(@RequestParam("id") Long id,
+                                       @RequestParam("limit")Integer pageSize,
+                                       @RequestParam("page")Integer pageIndex) {
+        return activityBusiness.queryActivityPerson(id,pageIndex,pageSize);
+    }
 }

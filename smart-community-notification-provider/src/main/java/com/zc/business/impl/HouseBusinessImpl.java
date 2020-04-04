@@ -43,7 +43,6 @@ public class HouseBusinessImpl implements HouseBusiness {
     }
 
     /**
-     *
      * @param tungId    栋号
      * @param unitId    单元号
      * @param number    门牌号
@@ -117,8 +116,8 @@ public class HouseBusinessImpl implements HouseBusiness {
     }
 
     @Override
-    public List<Map<String, Object>> queryByUserId(Long userId,Integer pageIndex,Integer pageSize) {
-        return houseMapper.queryHouseInfoByUserId(userId,(pageIndex-1)*pageSize,pageSize);
+    public List<Map<String, Object>> queryByUserId(Long userId, Integer pageIndex, Integer pageSize) {
+        return houseMapper.queryHouseInfoByUserId(userId, (pageIndex - 1) * pageSize, pageSize);
     }
 
     @Override
@@ -133,5 +132,15 @@ public class HouseBusinessImpl implements HouseBusiness {
                 .setPropertyPaymentPayerId(adminId);
         propertyPaymentRepository.saveAndFlush(propertyPayment);
         houseRepository.saveAndFlush(house);
+    }
+
+    @Override
+    public List<String> queryAddr(Long userId) {
+        List<Map<String, Object>> mapList = houseMapper.queryHouse(userId);
+        List<String> list = new ArrayList<>(mapList.size());
+        for (Map<String, Object> map : mapList) {
+            list.add(new StringBuilder().append(map.get("tungId")).append("幢").append(map.get("unitId")).append("单元").append(map.get("number")).toString());
+        }
+        return list;
     }
 }

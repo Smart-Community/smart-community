@@ -37,4 +37,7 @@ public interface HouseClient {
     public Map<String,Object> payManagent(@PathVariable("houseId")Long houseId,
                                           @RequestParam("adminId")Long adminId,
                                           @RequestParam("money")BigDecimal money);
+
+    @PostMapping("/v1.0/user/house/query")
+    public Map<String, Object> queryHouse(@RequestParam("userId") Long userId);
 }

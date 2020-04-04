@@ -21,7 +21,7 @@ spring:
   cloud:
     config:
       label: dev
-      name: eureka,mysql,commom,redis,rabbitmq,${spring.application.name}
+      name: eureka,mysql,common,redis,rabbitmq,${spring.application.name}
       uri: http://localhost:8099/
 
 
@@ -33,5 +33,5 @@ spring:
   cloud:
     config:
       label: prod
-      name: eureka,mysql,commom,redis,rabbitmq,${spring.application.name}
+      name: eureka,mysql,common,redis,rabbitmq,${spring.application.name}
       uri: http://localhost:8099/

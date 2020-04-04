@@ -94,4 +94,14 @@ public class HouseController {
         return houseClient.queryHouseByUserId(userId, pageIndex, pageSize);
     }
 
+    @GetMapping("/user/house/query")
+    public Object queryHouse(@RequestHeader("token")String token){
+        Long userId;
+        try {
+            userId = TokenUtil.getUserId(token);
+        } catch (Exception e) {
+            return ResultWrap.init(CommonConstants.FALIED,"token无效");
+        }
+        return houseClient.queryHouse(userId);
+    }
 }

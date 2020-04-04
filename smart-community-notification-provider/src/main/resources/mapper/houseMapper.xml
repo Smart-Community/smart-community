@@ -18,4 +18,19 @@
         from house_ownership ho left join house h on ho.house_ownership_house_id = h.house_id
         where ho.house_ownership_user_id =#{userId} limit #{pageIndex},#{pageSize}
     </select>
+
+    <select id="queryHouse" resultType="map">
+         select
+         ho.house_ownership_is_owner isOwner,
+         ho.house_ownership_user_id userId,
+         h.house_id houseId,
+         h.house_tung_id tungId,
+         h.house_unit_id unitId,
+         h.house_number `number`,
+         h.house_area area,
+         h.house_state state,
+         h.house_money money
+        from house_ownership ho left join house h on ho.house_ownership_house_id = h.house_id
+        where ho.house_ownership_user_id =#{userId}
+    </select>
 </mapper>

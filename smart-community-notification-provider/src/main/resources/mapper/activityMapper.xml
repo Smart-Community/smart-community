@@ -5,10 +5,10 @@
 <mapper namespace="com.zc.mapper.ActivityMapper">
 
     <update id="updateJoinNum">
-        update activity_information set activity_infomation_join = activity_infomation_join+#{num} ,set
-        activity_information_surplus_number = activity_information_surplus_number-#{num}
+        update activity_information set activity_infomation_join = activity_infomation_join + #{num} ,
+        activity_information_surplus_number = activity_information_surplus_number - #{num}
         <where>
-            activity_information_id = #{activityId}
+            activity_information_id = #{activityId} and activity_information_surplus_number>0
         </where>
     </update>
 
@@ -56,4 +56,49 @@
         order by activity_information_release_time desc
     </select>
 
+    <select id="queryUserActiveList" resultType="com.zc.vo.ActiveVO">
+        select
+        b.activity_information_id id,
+        b.activity_information_name `name`,
+        b.activity_information_describe `desc`,
+        b.activity_information_release_time releaseTime,
+        b.activity_information_start_time startTime,
+        b.activity_infomation_join_time joinTime,
+        b.activity_information_surplus_number surNumber,
+        b.activity_information_limit `limit`,
+        b.activity_infomation_join `join`,
+        b.activity_infomation_status state,
+        a.activity_registration_time inTime
+        from activity_registration a left join activity_information b
+        on a.activity_information_id = b.activity_information_id
+        <where>
+            and activity_infomation_status != 4
+            and a.activity_registration_user_id = #{userId}
+        </where>
+        order by activity_information_release_time desc
+        limit #{pageIndex},#{pageSize}
+    </select>
+
+    <select id="queryCountUser" resultType="int">
+        select count(1) from activity_registration where activity_registration_user_id =#{userId}  and activity_registration_status != 1;
+    </select>
+
+
+    <select id="queryActivityPerson" resultType="com.zc.vo.PersonVo">
+        select
+        b.user_id userId,
+        b.user_name userName,
+        b.user_phone phone,
+        a.activity_registration_time joinTime
+        from activity_registration a
+        left join `user` b on a.activity_registration_user_id=b.user_id
+        <where>
+            a.activity_information_id =#{id}
+        </where>
+        limit #{pageIndex},#{pageSize}
+    </select>
+
+    <select id="countActivityPerson" resultType="int">
+        select count(1) from activity_registration where activity_information_id =#{id}
+    </select>
 </mapper>

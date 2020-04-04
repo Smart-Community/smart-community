@@ -16,7 +16,8 @@
 <!-- 工具集 -->
 <div class="my-btn-box">
     <span class="fl">
-        <a class="layui-btn layui-btn-danger radius btn-add" id="btn-delete-all">故障报修</a>
+        <a class="layui-btn layui-btn-danger radius btn-add" id="btn-delete-all">公共报修</a>
+        <a class="layui-btn layui-btn-danger radius btn-add" id="btn-delete-all-1">故障报修</a>
         <!--        <a class="layui-btn btn-add btn-default" id="btn-add">添加</a>-->
         <a class="layui-btn btn-add btn-default" id="btn-refresh"><i class="layui-icon">&#x1002;</i></a>
     </span>
@@ -104,12 +105,28 @@
             layui.use('layer', function () {
                 parent.layer.open({
                     type: 2,
-                    title: '故障报修',
+                    title: '公共报修',
                     shadeClose: true,
                     shade: false,
                     maxmin: true, //开启最大化最小化按钮
                     area: ['800px', '100%'],
                     content: 'user/add-fault.html?token=' + getQueryVariable(),
+                    end: function () {
+                        $(".layui-laypage-btn").click()
+                    }
+                });
+            });
+        })
+        $("#btn-delete-all-1").click(function () {
+            layui.use('layer', function () {
+                parent.layer.open({
+                    type: 2,
+                    title: '故障报修',
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['800px', '100%'],
+                    content: 'user/add-fault-1.html?token=' + getQueryVariable(),
                     end: function () {
                         $(".layui-laypage-btn").click()
                     }

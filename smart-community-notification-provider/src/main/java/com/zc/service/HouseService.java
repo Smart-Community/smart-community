@@ -56,16 +56,16 @@ public class HouseService {
                     try {
                         file.transferTo(new File(path));
                     } catch (IOException e) {
-                        return ResultWrap.init(CommonConstants.FALIED,"系统异常");
+                        return ResultWrap.init(CommonConstants.FALIED, "系统异常");
                     }
                 } else {
-                    return ResultWrap.init(CommonConstants.FALIED,"类型不匹配");
+                    return ResultWrap.init(CommonConstants.FALIED, "类型不匹配");
                 }
             } else {
-                return ResultWrap.init(CommonConstants.FALIED,"类型不匹配");
+                return ResultWrap.init(CommonConstants.FALIED, "类型不匹配");
             }
         } else {
-            return ResultWrap.init(CommonConstants.FALIED,"文件为空");
+            return ResultWrap.init(CommonConstants.FALIED, "文件为空");
         }
         List<Object> list = ExcelImportUtil.importExcel(path, HouseDTO.class);
         return null;
@@ -104,11 +104,16 @@ public class HouseService {
     }
 
     @PostMapping("/v1.0/house/pay/managent/{houseId}")
-    public Map<String,Object> payManagent(@PathVariable("houseId")Long houseId,
-                              @RequestParam("adminId")Long adminId,
-                              @RequestParam("money")BigDecimal money){
-        houseBusiness.payManager(houseId,adminId,money);
-        return ResultWrap.init(CommonConstants.SUCCESS,"缴费成功");
+    public Map<String, Object> payManagent(@PathVariable("houseId") Long houseId,
+                                           @RequestParam("adminId") Long adminId,
+                                           @RequestParam("money") BigDecimal money) {
+        houseBusiness.payManager(houseId, adminId, money);
+        return ResultWrap.init(CommonConstants.SUCCESS, "缴费成功");
+    }
+
+    @PostMapping("/v1.0/user/house/query")
+    public Map<String, Object> queryHouse(@RequestParam("userId") Long userId) {
+        return ResultWrap.init(CommonConstants.SUCCESS,"查询成功",houseBusiness.queryAddr(userId));
     }
 
 }

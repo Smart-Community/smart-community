@@ -13,4 +13,6 @@ public interface HouseMapper {
     List<Map<String, Object>> queryHouseInfoByUserId(@Param("userId") Long userId,
                                                      @Param("pageIndex") Integer pageIndex,
                                                      @Param("pageSize") Integer pageSize);
+
+    List<Map<String,Object>> queryHouse(@Param("userId")Long userId);
 }

@@ -10,6 +10,7 @@ import com.zc.repository.ActivityRepository;
 import com.zc.util.RedisUtil;
 import com.zc.vo.ActiveVO;
 import com.zc.vo.LayuiVO;
+import com.zc.vo.PersonVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -87,7 +88,7 @@ public class ActivityBuinessImpl implements ActivityBusiness {
                 .setActivityRegistrationUserId(userId)
                 .setActivityRegistrationTime(new Date())
                 .setStatus(0);
-        activityRegistrationRepository.save(activityRegistration);
+        activityRegistrationRepository.saveAndFlush(activityRegistration);
         activityMapper.updateJoinNum(activityId, 1);
     }
 
@@ -124,6 +125,33 @@ public class ActivityBuinessImpl implements ActivityBusiness {
     @Override
     public List<ActivityInformation> findListByState(Integer state) {
         return activityRepository.findListByState(state);
+    }
+
+    @Override
+    public LayuiVO queryUserActiveList(String name, Integer status, Long userId, Integer pageIndex, Integer pageSize) {
+        if (status ==null || status != 6) {
+            return queryActiveList(name, status, pageIndex, pageSize);
+        }
+        List<ActiveVO> activeVOS = activityMapper.queryUserActiveList(name, status, userId,(pageIndex - 1) * pageSize, pageSize);
+        LayuiVO layuiVO = new LayuiVO();
+        layuiVO.setData(activeVOS);
+        layuiVO.setCount(activityMapper.queryCountUser(name, status,userId));
+        return layuiVO;
+    }
+
+    @Override
+    public int queryByUserIdAndActivityId(Long userId, Long id) {
+        return activityRegistrationRepository.countByUserIdAndActivityId(userId,id);
+    }
+
+    @Override
+    public LayuiVO queryActivityPerson(Long id,Integer pageIndex,Integer pageSize) {
+        List<PersonVo> personVos = activityMapper.queryActivityPerson(id,(pageIndex - 1) * pageSize, pageSize);
+        int count = activityMapper.countActivityPerson(id);
+        LayuiVO layuiVO = new LayuiVO();
+        layuiVO.setData(personVos);
+        layuiVO.setCount(count);
+        return layuiVO;
     }
 }
 

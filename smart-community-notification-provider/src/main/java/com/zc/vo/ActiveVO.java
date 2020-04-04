@@ -30,4 +30,8 @@ public class ActiveVO implements Serializable {
     private Integer join;
     private Integer state;
 
+    private String userId;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date inTime;
+
 }

@@ -122,7 +122,7 @@
                 , {title: '操作', width: 160, align: 'center', toolbar: '#barOption'} //这里的toolbar值是模板元素的选择器
             ]]
             , id: 'dataCheck'
-            , url: '/consumer/public/activity/page'
+            , url: '/consumer/public/activity/page/user'
             , method: 'post'
             , where:{
                 "token" : getQueryVariable()
@@ -193,12 +193,12 @@
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
             if(layEvent === 'edit'){ //编辑
                 layui.use('layer', function(){
-                    if(data.state==3){
-                        parent.layer.msg("已结束")
+                    if(data.state==5){
+                        parent.layer.msg("报名已满")
                     }else {
-                        parent.layer.confirm("您确定结束吗？",function() {
+                        parent.layer.confirm("您确定报名参加吗？",function() {
                             $.ajax({
-                                url:'/consumer/admin/activity/end',
+                                url:'/consumer/user/adctivity/join',
                                 data:{
                                     id:data.id
                                 },
@@ -209,10 +209,10 @@
                                 dataType:'json',
                                 success:function (res) {
                                     if(res.resp_code==000000){
-                                        parent.layer.msg("结束成功")
+                                        parent.layer.msg("报名成功成功")
                                         $(".layui-laypage-btn").click()
                                     }else{
-                                        parent.layer.msg("结束失败")
+                                        parent.layer.msg(res.resp_message)
                                     }
                                 }
                             })
@@ -272,12 +272,10 @@
 </script>
 <!-- 表格操作按钮集 -->
 <script type="text/html" id="barOption">
-    {{# if(d.state == 2){ }}
-    <a class="layui-btn layui-btn-mini layui-btn-danger" lay-event="edit"> 结束</a>
-    {{# }else if(d.state == 4){}}
+    {{# if(d.state == 1){ }}
+    <a class="layui-btn layui-btn-mini layui-btn-danger" lay-event="edit"> 报名</a>
+    {{# }else {}}
    ---
-        {{# }else{}}
-    <a class="layui-btn layui-btn-mini layui-btn-danger" lay-event="del"> 取消</a>
         {{# }}}
 </script>
 <!--订单详细页面弹出框-->

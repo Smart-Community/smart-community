@@ -5,7 +5,12 @@ package com.zc.enums;
  * @create 2020-03-30-19:56
  */
 public enum AcitveConstants {
-    ACTIVE_KEY("SM-Active:"), JOIN_KEY("JOIN"), LOCK_KEY("LOCK"), NUM_KEY("NUM");
+    ACTIVE_KEY("SM-Active:"),
+    //已参加人数
+    JOIN_KEY("JOIN"),
+    LOCK_KEY("LOCK"),
+    //最大报名人数
+    NUM_KEY("NUM");
 
     private String key;
 

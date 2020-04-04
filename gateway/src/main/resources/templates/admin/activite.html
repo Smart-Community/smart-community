@@ -187,6 +187,7 @@
             var data = obj.data; //获得当前行数据
             var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
             var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+            var da = data.id;
             if(layEvent === 'edit'){ //编辑
                 layui.use('layer', function(){
                     if(data.state==3){
@@ -241,6 +242,19 @@
                     })
                     })
                 }
+            }else if(layEvent === 'detail'){
+                parent.layer.open({
+                    type: 2,
+                    title: '已报名名单',
+                    shadeClose: true,
+                    shade: false,
+                    maxmin: true, //开启最大化最小化按钮
+                    area: ['800px', '100%'],
+                    content: 'admin/activity-person.html?token=' + getQueryVariable()+"&activityId="+da,
+                    end: function () {
+                        $(".layui-laypage-btn").click()
+                    }
+                });
             }
 
         });
@@ -270,11 +284,12 @@
 <script type="text/html" id="barOption">
     {{# if(d.state == 2){ }}
     <a class="layui-btn layui-btn-mini layui-btn-danger" lay-event="edit"> 结束</a>
-    {{# }else if(d.state == 4){}}
+    {{# }else if(d.state == 4 || d.state==5){}}
    ---
         {{# }else{}}
     <a class="layui-btn layui-btn-mini layui-btn-danger" lay-event="del"> 取消</a>
         {{# }}}
+    <a class="layui-btn layui-btn-mini layui-btn-danger" lay-event="detail"> 已报名名单</a>
 </script>
 <!--订单详细页面弹出框-->
 <script type="text/javascript" >

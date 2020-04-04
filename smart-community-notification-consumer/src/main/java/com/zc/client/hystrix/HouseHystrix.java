@@ -30,4 +30,9 @@ public class HouseHystrix implements HouseClient {
     public Map<String, Object> payManagent(Long houseId, Long adminId, BigDecimal money) {
         return ResultWrap.init(CommonConstants.FALIED,"系统异常");
     }
+
+    @Override
+    public Map<String, Object> queryHouse(Long userId) {
+        return ResultWrap.init(CommonConstants.FALIED,"系统异常");
+    }
 }
