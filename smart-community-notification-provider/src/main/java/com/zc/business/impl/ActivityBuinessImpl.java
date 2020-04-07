@@ -90,6 +90,14 @@ public class ActivityBuinessImpl implements ActivityBusiness {
                 .setStatus(0);
         activityRegistrationRepository.saveAndFlush(activityRegistration);
         activityMapper.updateJoinNum(activityId, 1);
+        ActivityInformation activityInformation = activityRepository.findById(activityId).get();
+        if (activityInformation.getActivityInformationLimit()==1){
+            if (activityInformation.getJoin()>=activityInformation.getActivityInformationNumber()){
+                activityInformation.setStatus(5);
+                activityRepository.saveAndFlush(activityInformation);
+            }
+        }
+
     }
 
     @Override
