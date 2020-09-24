@@ -35,8 +35,8 @@ public class Swagger2Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("聚合API文档智慧社区消费者模块")
-                .description("provider | smart_community.com")
+                .title("智慧社区服务调用模块")
+                .description("consumer | smart_community.com")
                 .termsOfServiceUrl("http://www.smart_community.com.com")
                 .contact("http://www.smart_community.com.com")
                 .version("1.0")

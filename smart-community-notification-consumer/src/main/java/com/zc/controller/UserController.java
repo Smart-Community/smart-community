@@ -198,7 +198,6 @@ public class UserController {
             return null;
         }
         return userClient.queryUserByHouseId(houseId);
-
     }
 
 

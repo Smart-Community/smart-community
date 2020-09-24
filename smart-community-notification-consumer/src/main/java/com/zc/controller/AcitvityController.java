@@ -135,6 +135,7 @@ public class AcitvityController {
         final String activKey = AcitveConstants.ACTIVE_KEY.getKey() + id + AcitveConstants.NUM_KEY.getKey();
         if (stringRedisTemplate.opsForValue().increment(activKey, -1L) < 0) {
             stringRedisTemplate.opsForValue().increment(activKey, 1L);
+            stringRedisTemplate.delete(key);
             return ResultWrap.init(CommonConstants.FALIED, "报名人数已满");
         }
         return activityClient.joinBy(userId, id);

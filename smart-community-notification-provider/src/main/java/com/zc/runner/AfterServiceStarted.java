@@ -35,7 +35,7 @@ public class AfterServiceStarted implements ApplicationRunner {
     private String PERMISSION_KEY;
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         List<PermissionDTO> list = permissionsMapper.permissionsAll();
         Map<String, String> map = new HashMap<>();
         for (PermissionDTO permissionDTO : list) {

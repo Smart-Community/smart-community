@@ -55,10 +55,9 @@ public class ActivityScanner {
                 }
             }
         }
-
         if (state == 1) {
             for (ActivityInformation activityInformation : listByState) {
-                if (now.compareTo(activityInformation.getJoinTime()) > 0) {
+                if (now.compareTo(activityInformation.getActivityInformationStartTime()) > 0) {
                     activityInformation.setStatus(2);
                     activityBusiness.update(activityInformation);
                     // 操作redis
